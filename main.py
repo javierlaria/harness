@@ -1,9 +1,10 @@
 import os
 import dotenv
 
-from config import create_client
 from pathlib import Path
 from openai import OpenAIError
+
+from config import create_client
 
 dotenv.load_dotenv(Path(__file__).resolve().parent / ".env")
 
@@ -14,20 +15,33 @@ def main() -> None:
     print("Client: ", client)
     print("Model: ", model)
 
+    messages = [{
+        "role": "system",
+        "content": "You are an assistant. All your replies must contain random cat purrs and nyas, relative to the size of the response."
+    }]
+
     try:
         print("Trying...")
-        response = client.chat.completions.create(
-            model = model,
-            messages =[
-                {"role": "user", "content": "Hola, prueba de conexión exitosa."}
-            ],
-            extra_headers={
-                "HTTP-Referer": "http://localhost:3000", 
-                "X-Title": "My Local Test Agent",
-            }
-        )
-        print("\nResponse:")
-        print(response.choices[0].message.content)
+        while True:
+            user_input = input("Prompt:  ")
+            if user_input.lower() in ("exit", "quit", "salir"):
+                break
+
+            messages.append({"role": "user", "content": user_input})
+
+            response = client.chat.completions.create(
+                model = model,
+                messages = messages,
+                extra_headers={
+                    "HTTP-Referer": "http://localhost:3000", 
+                    "X-Title": "My Local Test Agent",
+                }
+            )
+            answer = response.choices[0].message.content or ""
+            print("Response:  ", answer)
+
+            messages.append({"role": "system", "content": answer})
+            
     except OpenAIError as error:
         print("\nAPI request failed: ", error)
     except (KeyError, ValueError) as error:
