@@ -17,7 +17,7 @@ def main() -> None:
 
     messages = [{
         "role": "system",
-        "content": "You are an assistant. All your replies must contain random cat purrs and nyas, relative to the size of the response."
+        "content": "You are an assistant. All your replies must contain random low amount of unserious cat purrs and nyas."
     }]
 
     try:
@@ -41,7 +41,7 @@ def main() -> None:
             print("Response:  ", answer)
 
             messages.append({"role": "system", "content": answer})
-            
+
     except OpenAIError as error:
         print("\nAPI request failed: ", error)
     except (KeyError, ValueError) as error:
