@@ -1,0 +1,18 @@
+name: harness-project
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+    - openai
+    - openrouter
+    - python-dotenv
+    - ollama
+    - pydantic
+    - httpx
+    - tenacity
+    - pytest
+    - ruff
