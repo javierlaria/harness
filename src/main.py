@@ -24,7 +24,7 @@ def main() -> None:
         print("Trying...")
         while True:
             user_input = input("Prompt:  ")
-            if user_input.lower() in ("exit", "quit", "salir"):
+            if user_input.lower() in ("exit", "close", "quit", "salir"):
                 break
 
             messages.append({"role": "user", "content": user_input})
