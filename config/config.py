@@ -2,8 +2,6 @@ import os
 
 from openai import OpenAI
 
-
-
 def create_client(provider: str) -> tuple[OpenAI, str]:
     provider = provider.strip().lower()
     match provider:

@@ -4,9 +4,9 @@ import dotenv
 from pathlib import Path
 from openai import OpenAIError
 
-from config import create_client
+from config.config import create_client
 
-dotenv.load_dotenv(Path(__file__).resolve().parent / ".env")
+dotenv.load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 def main() -> None:
     provider = os.getenv("PROVIDER", "openai")
