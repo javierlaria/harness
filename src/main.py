@@ -6,8 +6,9 @@ import dotenv
 from pathlib import Path
 from openai import OpenAIError
 
-import config.config as cc
+import config.config as cfg
 import src.client as cl
+import src.context as ctx
 
 dotenv.load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
@@ -31,7 +32,7 @@ def main() -> None:
 
     ############# Configuration ################
 
-    client, model = cc.model_selection(provider= provider)
+    client, model = cfg.model_selection(provider= provider)
 
     messages = []
 
@@ -39,6 +40,9 @@ def main() -> None:
     evaluating_tokens = True
 
     chatting = True 
+
+    context = ctx.create_context(_instructions = """
+    You are an assistant to an experiment. This is a communication check.""")
 
     try:
         ############  Chatting loop ##############
@@ -52,7 +56,7 @@ def main() -> None:
 
             complete_answer, response, times = cl.handle_request(
                 user_input = user_input,
-                current_context= messages,
+                context= context,
                 client= client,
                 model= model
             )
