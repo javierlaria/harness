@@ -9,7 +9,7 @@ def create_client(provider: str, model: str) -> tuple[OpenAI, str]:
         case "openrouter": # removed other providers since Im not going to use them
             return (OpenAI(api_key= os.environ["OPENROUTER_API_KEY"], base_url= os.environ["OPENROUTER_BASE_URL"]), model,)
         case _:
-            raise ValueError(f"Wrong provider, not set: ", provider)
+            raise ValueError(f"Client: Wrong provider, not set: ", provider)
 
 def handle_request(input, current_context, client, model):
     current_context.append({"role": "user", "content": input})
@@ -35,13 +35,13 @@ def handle_request(input, current_context, client, model):
             case "response.completed":
                 end_message = event.response
             case "response.failed":
-                raise RuntimeError({event.response.error})
+                raise RuntimeError(f"Client: {{event.response.error}}")
             case "error":
-                raise RuntimeError("Stream error: ", {event.message})
+                raise RuntimeError("Client:  Stream error: ", {event.message})
     end_time = time.perf_counter()
 
     if end_message is None:
-        raise RuntimeError("Response did not complete successfully")
+        raise RuntimeError("Client: Response did not complete successfully")
 
     current_context.append({"role" : "assistant", "content" : complete_answer})
 

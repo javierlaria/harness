@@ -46,7 +46,7 @@ def model_selection(provider, _model= None):
                 break
 
             except (ValueError, IndexError):
-                print(f"Index out of range (1 - {len(model_list)})")
+                print(f"Config: Index out of range (1 - {len(model_list)})")
 
     api_client = client.create_client(provider)
 

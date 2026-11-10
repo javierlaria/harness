@@ -72,9 +72,9 @@ def main() -> None:
                 print("Total duration          ", times["total"])
 
     except OpenAIError as error:
-        print("\n-- API request failed: ", error)
+        print("\nMain: -- API request failed: ", error)
     except (KeyError, ValueError, AttributeError) as error:
-        print("Didnt work, error:")
+        print("\nMain: Didnt work, error:")
         print(error)
 
 
