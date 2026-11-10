@@ -14,6 +14,11 @@ def main() -> None:
     provider = os.getenv("PROVIDER", "openrouter")
     config = True
     chatting = False
+    ############################################
+    ############# Configuration ################
+    ############################################
+
+    # Section to choose the OpenRouter models from the list. Creates the provider
     while config:
         model_list = os.getenv("OPENROUTER_MODELS", "").split(",")
         model_list = [model.strip() for model in model_list if model.strip()]
@@ -35,6 +40,8 @@ def main() -> None:
     messages = []
 
     try:
+        ############  Chatting loop ##############
+        # The loop starts after the setup: the model and test are chosen.
         while chatting:
             print("Connecting...")
             user_input = input("Prompt:  ")
@@ -43,7 +50,7 @@ def main() -> None:
 
             messages.append({"role": "user", "content": user_input})
             start_time = time.perf_counter()
-            response = client.responses.create(   
+            response = client.responses.create(   # responses is the recommended api, and the newest.
                     model = model,
                     input = messages,
                     stream = True, # fractured response
