@@ -1,12 +1,13 @@
 import os
+import time
 import dotenv
 
-import time
 
 from pathlib import Path
 from openai import OpenAIError
 
 import config.config as cc
+import src.client as cl
 
 dotenv.load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
@@ -27,89 +28,49 @@ dotenv.load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 def main() -> None:
     provider = os.getenv("PROVIDER", "openrouter")
-    chatting = False
-    ############################################
-    ############# Configuration ################
-    ############################################
 
-    # Section to choose the OpenRouter models from the list. Creates the provider
-    client, model, success = cc.model_selection(provider= provider)
+    ############# Configuration ################
+
+    client, model = cc.model_selection(provider= provider)
 
     messages = []
 
     evaluating_time = True
     evaluating_tokens = True
 
+    chatting = True 
+
     try:
         ############  Chatting loop ##############
-        # The loop starts after the setup: the model and test are chosen.
         while chatting:
-            print("Connecting...")
-            user_input = input("Prompt:  ")
+            user_input = input("\nPrompt:  ")
+
             if user_input.lower() in ("exit", "close", "quit", "salir"):
                 chatting = False
-                print("\nLoop stopped, but this still runs")
-                if not chatting:
-                    print("This as well")
+                print("\nChat exit.")
                 break
 
-            messages.append({"role": "user", "content": user_input})
+            complete_answer, response, times = cl.handle_request(
+                user_input = user_input,
+                current_context= messages,
+                client= client,
+                model= model
+            )
+            if evaluating_tokens:
+                print("--  Usage  --")
+                print("Total tokens:           ", response.usage.total_tokens)
+                print(" - Input tokens:        ", response.usage.input_tokens)
+                print(" - - Cached tokens:     ", response.usage.input_tokens_details.cached_tokens)
+                print(" - Output tokens:       ", response.usage.output_tokens)
+                print(" - - Reasoning tokens:  ", response.usage.output_tokens_details.reasoning_tokens)
+            print("\nStatus: ", response.status)
+
             if evaluating_time:
-                start_time = time.perf_counter()
+                print(f"--  Duration  --")
+                print("Response confirmation:  ", times["confirmation"])
+                print("First token received:   ", times["first_token"])
+                print("Total duration          ", times["total"])
 
-            response = client.responses.create(   # responses is the recommended api, and the newest.
-                    model = model,
-                    input = messages,
-                    stream = True, # fractured response
-                )
-
-            complete_answer = ""
-            end_message = None
-            response_id = None
-
-            for event in response:
-                match event.type:
-                    case "response.created":
-                        first_response_time = time.perf_counter()
-                        response_id = event.response.id
-                        print(f"Response started: {response_id}\n")
-                    case "response.output_text.delta":
-                        first_token_time = time.perf_counter()
-                        complete_answer += event.delta
-                        print(event.delta, end="", flush= True)
-                    case "response.completed":
-                        end_message = event.response
-                        print("\n\nResponse complete.\n")
-                    case "response.failed":
-                        print("Response failed: ", event.response.error)
-                    case "error":
-                        print("Stream error: ", event.message)
-                # event types for each thing, probably unnecessary:
-                # created, in_progress, output_item.added (new output generated), content_part.added (content part started),
-                # output_text.delta (new text from response), output_text.done (response finished),
-                # output_item.done (output finished), completed (done)
-                
-                # They are parts of the lifecycle of the response
-            if evaluating_time:
-                end_time = time.perf_counter()
-
-            messages.append({"role": "system", "content": complete_answer})
-            
-            if end_message:
-                print("Model: ", end_message.model)
-                if evaluating_tokens:
-                    print("--  Usage  --")
-                    print("Total tokens:           ", end_message.usage.total_tokens)
-                    print(" - Input tokens:        ", end_message.usage.input_tokens)
-                    print(" - - Cached tokens:     ", end_message.usage.input_tokens_details.cached_tokens)
-                    print(" - Output tokens:       ", end_message.usage.output_tokens)
-                    print(" - - Reasoning tokens:  ", end_message.usage.output_tokens_details.reasoning_tokens)
-                print("\nStatus: ", end_message.status)
-                if evaluating_time:
-                    print(f"--  Duration  --")
-                    print("Response confirmation:  ", first_response_time - start_time)
-                    print("First token received:   ", first_token_time - start_time)
-                    print("Total duration          ", end_time - start_time)
     except OpenAIError as error:
         print("\n-- API request failed: ", error)
     except (KeyError, ValueError, AttributeError) as error:
