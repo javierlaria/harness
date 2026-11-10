@@ -1,0 +1,20 @@
+{
+    "test_id" : "test_001",
+    "name" : "ZERO_SHOT",
+    "description" : "test with zero shot prompts.",
+    "prompts" : [{
+        "id" : "prompt_001",
+        "input" : "PASS",
+        "expected" : null
+    },
+    {
+        "id" : "prompt_001",
+        "input" : "PASS",
+        "expected" : null
+    },
+    {
+        "id" : "prompt_001",
+        "input" : "PASS",
+        "expected" : null
+    }]
+}
