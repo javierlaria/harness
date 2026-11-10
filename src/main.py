@@ -6,36 +6,34 @@ import time
 from pathlib import Path
 from openai import OpenAIError
 
-from config.config import create_client
+import config.config as cc
 
 dotenv.load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
+###### Application entry point
+#    ORDER OF THINGS
+
+# load configuration
+# load dataset (if any, probably wont have any)
+# dependencies (already at the top)
+# MAIN CHAT LOOP
+# send model request
+# collect response
+# evaluate
+# store results
+# rechat?
+
+# do not implement here, just connect
+
 def main() -> None:
     provider = os.getenv("PROVIDER", "openrouter")
-    config = True
     chatting = False
     ############################################
     ############# Configuration ################
     ############################################
 
     # Section to choose the OpenRouter models from the list. Creates the provider
-    while config:
-        model_list = os.getenv("OPENROUTER_MODELS", "").split(",")
-        model_list = [model.strip() for model in model_list if model.strip()]
-        for i, model in enumerate(model_list):
-            print(f"{i + 1}: {model}")
-        try:
-            model_selection = int(input(f"Select Model (1 - {len(model_list)}): ")) - 1
-            if model_list[model_selection]:
-                selected_model = model_list[model_selection]
-                chatting = True
-                config = False
-        except (ValueError, IndexError):
-            print(f"Select a proper model (1 - {len(model_list)})")
-    client, model = create_client(provider, selected_model)
-    print("Provider: ", provider)
-    print("Client: ", client)
-    print("Model: ", model)
+    client, model, success = cc.model_selection(provider= provider)
 
     messages = []
 
@@ -46,6 +44,10 @@ def main() -> None:
             print("Connecting...")
             user_input = input("Prompt:  ")
             if user_input.lower() in ("exit", "close", "quit", "salir"):
+                chatting = False
+                print("\nLoop stopped, this still runs")
+                if not chatting:
+                    print("\nThis as well")
                 break
 
             messages.append({"role": "user", "content": user_input})

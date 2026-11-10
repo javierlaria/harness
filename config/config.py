@@ -1,16 +1,30 @@
 import os
+import src.client as client
 
-from openai import OpenAI
+##### Things to put here
+# Api configuration (OpernRouter, base url)
+# model selection (default settings, temperature, sampling parameters, token limits)
+# experiment execution defaults
+# reproducibility settings (seed, deterministic execution settings)
+# Experiment ID? 
+# Prompt selection, repetitions, etc.
 
-def create_client(provider: str, model: str) -> tuple[OpenAI, str]:
-    provider = provider.strip().lower()
-    match provider:
-        case "openrouter": # removed other providers since Im not going to use them
-            return (OpenAI(api_key= os.environ["OPENROUTER_API_KEY"], base_url= "https://openrouter.ai/api/v1"), model,)
-        case _:
-            raise ValueError(f"Wrong provider, not set: ", provider)
+# Just connect things here, the setup of the experiment and everything.
 
-def model_selection(provider, _model = None):
+##################### deterministic ###################
+# model: fixed mode version
+# temperature: set to 0, though it does not guarantee deterministic, openrouter requests providers and implementations can differ.
+# top-p: keep fixed
+# seed : fixed, same as temperature
+# dataset: fixed, versioned
+# prompt: version and hash
+# context: identical
+# evaluation: preferably rule-based instead of llm judge
+# repetitions: fixed number of repetitions
+
+# there is a difference between deterministic evaluation and deterministic generation -> evaluation can be achieved via scoring
+
+def model_selection(provider, _model: str = None):
     success = False
     while not success:
         try:
@@ -29,14 +43,16 @@ def model_selection(provider, _model = None):
                     if model == _model:
                         selected_model = model
                         success = True
-                    if i >= len(model_list):
+                    elif i >= len(model_list):
                         print("Config - Model selection: given model parameter not in list")
                         _model = None
 
         except (ValueError, IndexError):
             print(f"Select a proper model (1 - {len(model_list)})")
-    client, model = create_client(provider, selected_model)
+            
+    client, model = client.create_client(provider, selected_model)
     print("Provider: ", provider)
     print("Client: ", client)
     print("Model: ", model)
+    return client, model, True
 
