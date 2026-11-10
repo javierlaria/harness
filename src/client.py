@@ -12,7 +12,7 @@ def create_client(provider: str, model: str) -> tuple[OpenAI, str]:
         case _:
             raise ValueError(f"Client: Wrong provider, not set: ", provider)
 
-def handle_request(user_input, context: Context, client, model):
+def handle_request(user_input, context: Context, client, model, print_answer: bool = True):
     context.add_message("user", user_input)
 
     start_time = time.perf_counter
@@ -34,7 +34,8 @@ def handle_request(user_input, context: Context, client, model):
                 if first_token_time is None:
                     first_token_time = time.perf_counter()
                 complete_answer += event.delta
-                print(event.delta, end="", flush= True)
+                if print_answer:
+                    print(event.delta, end="", flush= True)
 
             case "response.completed":
                 end_message = event.response
