@@ -9,48 +9,52 @@
 # semantic similarity?
 
 ### scoring
-# answer/reference comparison
+# answer/reference (expectance) comparison
 # invalid or missing handle
 # deterministic evaluation rules
 
 ### analysis
 # aggregate scores
-# techinique comparison
+# technique comparison
 # confusion matrix?
 # experiment summaries
 
-def evaluate_response(prompt: dict, response: str):
-    expected = prompt.get("expected")
+def normalize(text: str) -> str:
+    return " ".join(text.lower().strip().split())
 
-    results = {
-        "prompt_id" : prompt["id"],
-        "response" : response,
-        "evaluated" : False,
-        "score" : None
+def evaluate_expected(response: str, expected: str) -> float:
+    return float(normalize(response) == normalize(expected))
+
+def evaluate_response(prompt: dict, response: str, score_criterions: dict | None = None) -> dict: 
+    expected = prompt.get("expected_answer", None)
+
+    result = {
+        "expectance" : None,
+        "score_criterions" : score_criterions or {},
+        "overall_score" : None,
+        "status" : "pending"
     }
 
-    if expected is None:
-        return results
+    if expected is not None:
+        result["expectance"] = evaluate_expected(response, expected)
 
-    results["evaluated"] = True
-    results["score"] = (1 if response.strip() == expected.strip() else 0 )
+    if score_criterions: 
+        result["status"] = "complete"
 
-    return results
+    elif expected is not None:
+        result["status"] = "partially completed"
 
-def summarize_results(results: list[dict]):
-    evaluated = [result for result in results if result["evaluated"]]
+    return result
 
-    if not evaluated:
-        return {
-            "total" : len(results),
-            "evaluated" : 0,
-            "average_score" : None
-        }
+def calculate_weighted_scores(score_criterions: dict, criterion: dict) -> float | None:
+    scores = {name : score for name, score in score_criterions.items() if name in criterion}
 
-    average_score = sum(result["score"] for result in evaluated) / len(evaluated)
+    if not scores: # nothing to score on
+        return None
 
-    return {
-        "total" : len(results),
-        "evaluated" : len(evaluated),
-        "average_score" : average_score
-    }
+    total_weight = sum(criterion[name]["weight"] for name in scores.keys())
+
+    if total_weight == 0: # weights shouldnt really be 0 
+        return None
+
+    return sum(score * criterion[name]["weight"] for name, score in scores.items()) / total_weight # weighted sum

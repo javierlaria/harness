@@ -4,26 +4,26 @@ from openai import OpenAI
 
 from src.context import Context 
 
-def create_client(provider: str, model: str) -> tuple[OpenAI, str]:
+def create_client(provider: str) -> OpenAI:
     provider = provider.strip().lower()
-
     match provider:
 
         case "openrouter": # removed other providers since Im not going to use them
-            return (OpenAI(api_key= os.environ["OPENROUTER_API_KEY"], base_url= os.environ["OPENROUTER_BASE_URL"]), model,)
+            return OpenAI(api_key= os.environ["OPENROUTER_API_KEY"], base_url= os.environ["OPENROUTER_BASE_URL"])
         
         case _:
             raise ValueError(f"Client: Wrong provider, not set: ", provider)
 
 
-def handle_request(user_input, context: Context, client, model, print_answer: bool = True):
+def handle_request(user_input: str, context: Context, client: OpenAI, model: str, print_answer: bool = True):
     context.add_message("user", user_input)
 
     start_time = time.perf_counter
+    
     first_response_time = None
     first_token_time = None
 
-    response = client.responses.create(model = model, input = context.to_input(), stream= True)
+    response = client.responses.create(model = model, instructions= context.instructions, input = context.to_input(), stream= True)
 
     complete_answer = ""
     end_message = None
@@ -37,6 +37,7 @@ def handle_request(user_input, context: Context, client, model, print_answer: bo
             case "response.output_text.delta":
                 if first_token_time is None:
                     first_token_time = time.perf_counter()
+
                 complete_answer += event.delta
                 if print_answer:
                     print(event.delta, end="", flush= True)
@@ -53,7 +54,7 @@ def handle_request(user_input, context: Context, client, model, print_answer: bo
     end_time = time.perf_counter()
 
     if end_message is None:
-        raise RuntimeError("Client: Response did not complete successfully")
+        raise RuntimeError("Client: Response did not complete successfully.")
 
     context.add_message("assistant", complete_answer)
 

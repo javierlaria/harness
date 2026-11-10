@@ -3,10 +3,10 @@
     "name" : "Classify attributes",
     "description" : "Evaluate how the model follows basic classification instructions for relatively subjective descriptions.",
     "baseline" : {
-        "reference_answers" : true,
+        "expected_answers" : true,
         "rubric" : true,
 
-        "criteria" : {
+        "criterions" : {
             "accuracy" : {
                 "weight" : 0.5
             },
