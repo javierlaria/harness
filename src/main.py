@@ -32,6 +32,7 @@ dotenv.load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 
 def chatting(client, model, save: bool = False):
+    # Im leaving chatting without any evaluations or other stuff, because thats more for testing
     context = ctx.create_context(_instructions = """
     You are an assistant to an experiment. This is a communication check.""")
     while True:
@@ -50,11 +51,13 @@ def chatting(client, model, save: bool = False):
         )
 
         print("\n")
+
     if save:
         save_name = input("\nChat filename (name.json): ")
         context.save_to(str(os.getenv("CONTEXTS_FILEPATH"))+str(save_name)+".json")
 
 def testing(client, model, save: bool = False):
+    # Actual test and evaluation
 
     test = pr.load_prompts(os.getenv("PROMPTS_FILEPATH"))
 
@@ -97,7 +100,7 @@ def testing(client, model, save: bool = False):
         results.append(evaluation)
 
     if save:
-        context.save_to(str(os.getenv("CONTEXTS_FILEPATH"))+str(test_id)+".json")
+        context.save_to(str(os.getenv("RESULTS_FILEPATH"))+"run_test_"+str(test_id)+".json")
 
     summary = ev.summarize_results(results)
 
@@ -117,8 +120,10 @@ def main():
             print("2: Testing")
             print("3: Return")
 
-            mode = input("Mode: ").strip()
-            match input("Save data? (yes, no): ").strip().lower():
+            mode = input("Mode: ").strip().lower()
+            save_data = input("Save data? (yes, no): ").strip().lower()
+
+            match save_data:
                 case "yes":
                     save = True
                 case _:
@@ -134,11 +139,11 @@ def main():
                     break
                 case _:
                     print("Invalid mode.")
+
         except OpenAIError as error:
-            print("\nMain: -- API request failed: ", error)
+            print("\nMain: -- API request failed: ", {error})
         except (KeyError, ValueError, AttributeError) as error:
-            print("\nMain: Didnt work, error:")
-            print(error)
+            print("\nMain: Didnt work, error:", {error})
 
 
 if __name__ == "__main__":

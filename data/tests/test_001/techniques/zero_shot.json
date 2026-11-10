@@ -1,0 +1,51 @@
+{
+    "technique_id" : "zero_shot",
+    "name" : "Zero-shot",
+
+    "context" : {
+        "instructions": "You are an assistant. Answer accurately and concisely. All the answers to questions must be wrapped around <answer>answer</answer>.",
+        "problem": "Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
+        "wrapper" : {
+            "in" : "<answer>",
+            "out" : "</answer>"
+        },
+        "initial_messages" : []
+    },
+
+    "execution" : {
+        "strategy" : "independent"
+    },
+
+    "promtps" : [
+        {
+            "id" : "prompt_001",
+            "input" : "An elephant trampling a rhino.",
+            "expected" : "Strength"
+        },
+        {
+            "id" : "prompt_002",
+            "input" : "An assassin slicing a throat.",
+            "expected" : "Dexterity"
+        },
+        {
+            "id" : "prompt_003",
+            "input" : "A governor convincing a mob.",
+            "expected" : "Intelligence"
+        },
+        {
+            "id" : "prompt_004",
+            "input" : "A King invading a rival kingdom.",
+            "expected" : "Strength"
+        },
+        {
+            "id" : "prompt_005",
+            "input" : "A scientist throwing a knife to test his strength",
+            "expected" : "Intelligence"
+        },
+        {
+            "id" : "prompt_006",
+            "input" : "A giant monster running in fear of a venomous plant",
+            "expected" : "Intelligence"
+        }
+    ]
+}
