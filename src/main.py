@@ -37,6 +37,9 @@ def main() -> None:
 
     messages = []
 
+    evaluating_time = True
+    evaluating_tokens = True
+
     try:
         ############  Chatting loop ##############
         # The loop starts after the setup: the model and test are chosen.
@@ -45,13 +48,15 @@ def main() -> None:
             user_input = input("Prompt:  ")
             if user_input.lower() in ("exit", "close", "quit", "salir"):
                 chatting = False
-                print("\nLoop stopped, this still runs")
+                print("\nLoop stopped, but this still runs")
                 if not chatting:
-                    print("\nThis as well")
+                    print("This as well")
                 break
 
             messages.append({"role": "user", "content": user_input})
-            start_time = time.perf_counter()
+            if evaluating_time:
+                start_time = time.perf_counter()
+
             response = client.responses.create(   # responses is the recommended api, and the newest.
                     model = model,
                     input = messages,
@@ -85,24 +90,26 @@ def main() -> None:
                 # output_item.done (output finished), completed (done)
                 
                 # They are parts of the lifecycle of the response
-            
-            end_time = time.perf_counter()
+            if evaluating_time:
+                end_time = time.perf_counter()
 
             messages.append({"role": "system", "content": complete_answer})
             
             if end_message:
                 print("Model: ", end_message.model)
-                print("--  Usage  --")
-                print("Total tokens:           ", end_message.usage.total_tokens)
-                print(" - Input tokens:        ", end_message.usage.input_tokens)
-                print(" - - Cached tokens:     ", end_message.usage.input_tokens_details.cached_tokens)
-                print(" - Output tokens:       ", end_message.usage.output_tokens)
-                print(" - - Reasoning tokens:  ", end_message.usage.output_tokens_details.reasoning_tokens)
+                if evaluating_tokens:
+                    print("--  Usage  --")
+                    print("Total tokens:           ", end_message.usage.total_tokens)
+                    print(" - Input tokens:        ", end_message.usage.input_tokens)
+                    print(" - - Cached tokens:     ", end_message.usage.input_tokens_details.cached_tokens)
+                    print(" - Output tokens:       ", end_message.usage.output_tokens)
+                    print(" - - Reasoning tokens:  ", end_message.usage.output_tokens_details.reasoning_tokens)
                 print("\nStatus: ", end_message.status)
-                print(f"--  Duration  --")
-                print("Response confirmation:  ", first_response_time - start_time)
-                print("First token received:   ", first_token_time - start_time)
-                print("Total duration          ", end_time - start_time)
+                if evaluating_time:
+                    print(f"--  Duration  --")
+                    print("Response confirmation:  ", first_response_time - start_time)
+                    print("First token received:   ", first_token_time - start_time)
+                    print("Total duration          ", end_time - start_time)
     except OpenAIError as error:
         print("\n-- API request failed: ", error)
     except (KeyError, ValueError, AttributeError) as error:

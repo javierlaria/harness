@@ -6,3 +6,5 @@
 # retrieval (selection, recheck, loop?)
 # formatting (filtering, truncation and metadata)
 
+def create_context():
+    return []

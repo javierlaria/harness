@@ -24,35 +24,36 @@ import src.client as client
 
 # there is a difference between deterministic evaluation and deterministic generation -> evaluation can be achieved via scoring
 
-def model_selection(provider, _model: str = None):
-    success = False
-    while not success:
-        try:
-            if _model == None:
-                model_list = os.getenv("OPENROUTER_MODELS", "").split(",")
-                model_list = [model.strip() for model in model_list if model.strip()]
-                for i, model in enumerate(model_list):
-                    print(f"{i + 1}: {model}")
-                model_selection = int(input(f"Select Model (1 - {len(model_list)}): ")) - 1
-                if model_list[model_selection]:
-                    selected_model = model_list[model_selection]
-                    success = True
-    
-            else:
-                for i, model in enumerate(model_list):
-                    if model == _model:
-                        selected_model = model
-                        success = True
-                    elif i >= len(model_list):
-                        print("Config - Model selection: given model parameter not in list")
-                        _model = None
+def model_selection(provider, _model= None):
+    model_list = [model.strip() for model in os.getenv("OPENROUTER_MODELS", "").split(",") if model.strip()]
 
-        except (ValueError, IndexError):
-            print(f"Select a proper model (1 - {len(model_list)})")
-            
-    client, model = client.create_client(provider, selected_model)
+    if not model_list:
+        raise ValueError(f"Config: No models in list for provider {provider})")
+
+    if _model is not None:
+        if _model not in model_list:
+            raise ValueError(f"Config: Model not in configuration : {_model}")
+        selected_model = _model
+
+    else:
+        for i, model in enumerate(model_list):
+            print(f"{i+1}: {model}")
+
+        while True:
+            try:
+                user_input = int(input(f"Select model (1 - {len(model_list)}): "))
+                selected_model = model_list[user_input - 1]
+                break
+
+            except (ValueError, IndexError):
+                print(f"Index out of range (1 - {len(model_list)})")
+
+    api_client = client.create_client(provider)
+
     print("Provider: ", provider)
-    print("Client: ", client)
-    print("Model: ", model)
-    return client, model, True
+    print("Client: ", api_client)
+    print("Model: ", selected_model)
+
+    return api_client, selected_model
+
 
