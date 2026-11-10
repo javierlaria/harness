@@ -39,13 +39,28 @@
         },
         {
             "id" : "prompt_005",
-            "input" : "A scientist throwing a knife to test his strength",
+            "input" : "A scientist throwing a knife to test his strength.",
             "expected" : "Intelligence"
         },
         {
             "id" : "prompt_006",
-            "input" : "A giant monster running in fear of a venomous plant",
+            "input" : "A giant monster running in fear of a venomous plant.",
             "expected" : "Intelligence"
+        },
+        {
+            "id" : "prompt_007",
+            "input" : "A child scoring ten goals in a football match.",
+            "expected" : "Dexterity"
+        },
+        {
+            "id" : "prompt_008",
+            "input" : "A lycanthrope locking himself in a cellar during a full moon.",
+            "expected" : "Intelligence"
+        },
+        {
+            "id" : "prompt_009",
+            "input" : "A construction worker carrying a 40 kilogram sand bag.",
+            "expected" : "Strength"
         }
     ]
 }

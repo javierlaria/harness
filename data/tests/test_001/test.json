@@ -1,7 +1,7 @@
 {
     "test_id" : "test_001",
     "name" : "Classify attributes",
-    "description" : "Evaluate how the model follows basic classification instructions.",
+    "description" : "Evaluate how the model follows basic classification instructions for relatively subjective descriptions.",
     "baseline" : {
         "reference_answers" : true,
         "rubric" : true,
