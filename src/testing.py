@@ -29,7 +29,7 @@ def extract_usage(response) -> dict:
         "reasoning_tokens" : response.usage.output_tokens_details.reasoning_tokens
     }
 
-def run_test(complete_test: dict, client, model: str, number_of_repetitions: int = 1) -> dict:
+def run_test(complete_test: dict, client, model: str, repetitions: int = 1) -> dict:
     test = complete_test["test"]
     technique = complete_test["technique"]
 
@@ -42,7 +42,7 @@ def run_test(complete_test: dict, client, model: str, number_of_repetitions: int
     if not strategy not in ("independent", "sequential", "combined"):
         raise ValueError(f"Testing: Unsupported strategy: {strategy}")
 
-    if number_of_repetitions < 1:
+    if repetitions < 1:
         raise ValueError("Testing: At least one repetition.")
 
     instructions = technique["context"].get("instructions", "")
@@ -54,7 +54,7 @@ def run_test(complete_test: dict, client, model: str, number_of_repetitions: int
 
     runs = []
 
-    for repetition in range(1, number_of_repetitions + 1):
+    for repetition in range(1, repetitions + 1):
         print(f"Repetition {repetition}\n")
 
         current_context = base_context.copy()
@@ -162,7 +162,18 @@ def run_test(complete_test: dict, client, model: str, number_of_repetitions: int
             "contexts" : saved_contexts 
         })
 
-    result = 1
+    result = build_result(
+        test= test,
+        technique= technique,
+        model= model,
+        strategy= strategy,
+        repetitions= repetitions,
+        runs= runs
+    )
+
+    save_result(result=result)
+
+    return result
 
 def build_result(test, technique, model, strategy, repetitions, runs) -> dict:
     responses = [response for run in runs for response in run.get("responses")]

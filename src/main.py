@@ -12,34 +12,36 @@ import src.client as cl
 import src.context as ctx
 import src.prompts as pr
 import src.evaluation as ev
+import src.testing as tst
 
 dotenv.load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
-###### Application entry point
-#    ORDER OF THINGS
+def select_items(items: list, label: str) -> dict:
+    if not items:
+        raise ValueError("Main: No ", label)
 
-# load configuration
-# load dataset (if any, probably wont have any)
-# dependencies (already at the top)
-# MAIN CHAT LOOP
-# send model request
-# collect response
-# evaluate
-# store results
-# rechat?
+    for i, item in enumerate(items):
+        print(f"{i+1} : {item.get("name", item.get("test_id"))}")
 
-# do not implement here, just connect
+    while True:
+        try:
+            selection = int(input(f"Select {label}: "))
 
+            if 1 <= selection <= len(items):
+                return items[selection - 1]
+        except ValueError:
+            pass
+        print("Select a correct label.")
 
 def chatting(client, model, save: bool = False):
-    # Im leaving chatting without any evaluations or other stuff, because thats more for testing
-    context = ctx.create_context(_instructions = """
-    You are an assistant to an experiment. This is a communication check.""")
+    # Im leaving chatting without any evaluations or other stuff, because thats more for testing.
+    context = ctx.create_context(_instructions = "You are an assistant to an experiment. Keep all your answers short.")
+    print("Chatting. Type exit to stop")
+
     while True:
         user_input = input("\nPrompt:  ")
 
-        if user_input.lower() in ("exit", "close", "quit", "salir"):
-            print("\nChat exit.")
+        if user_input.lower() in ("exit", "close", "quit", "salir", "q"):
             break
         
         complete_answer, response, times = cl.handle_request(
@@ -51,7 +53,8 @@ def chatting(client, model, save: bool = False):
         )
 
         print("\n")
-
+        print(f"                                                             Total tokens:   {response.usage.total_tokens}")
+        print(f"                                                             Total duration: {times["total"]}")
     if save:
         save_name = input("\nChat filename (name.json): ")
         context.save_to(str(os.getenv("CONTEXTS_FILEPATH"))+str(save_name)+".json")

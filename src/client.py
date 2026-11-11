@@ -2,7 +2,7 @@ import os
 import time
 from openai import OpenAI
 
-from src.context import Context 
+import src.context as ctx
 
 def create_client(provider: str) -> OpenAI:
     provider = provider.strip().lower()
@@ -15,7 +15,7 @@ def create_client(provider: str) -> OpenAI:
             raise ValueError(f"Client: Wrong provider, not set: ", provider)
 
 
-def handle_request(user_input: str, context: Context, client: OpenAI, model: str, print_answer: bool = True):
+def handle_request(user_input: str, context: ctx.Context, client: OpenAI, model: str, print_answer: bool = True):
     context.add_message("user", user_input)
 
     start_time = time.perf_counter
