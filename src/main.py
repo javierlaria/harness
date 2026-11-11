@@ -101,8 +101,6 @@ def main():
     print("1: Chatting")
     print("2: Testing")
  
-
-
     mode = input("Mode: ").strip().lower()
     if mode not in ("1", "2"):
         print("Invalid mode.")
