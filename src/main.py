@@ -18,7 +18,7 @@ dotenv.load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 def select_item(items: list, label: str) -> dict:
     if not items:
-        raise ValueError("Main: No ", label)
+        raise ValueError(f"Main: No {label}/s")
 
     for i, item in enumerate(items):
         print(f"{i+1} : {item.get("name", item.get("test_id"))}")
