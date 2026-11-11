@@ -44,12 +44,17 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save
 
     if repetitions < 1:
         raise ValueError("Testing: At least one repetition.")
+    
+    instructions = " ".join([technique["context"].get("instructions", ""), technique["context"].get("problem", "")])
 
-    instructions = technique["context"].get("instructions", "")
     initial_messages = technique["context"].get("initial_messages", [])
 
     base_context = ctx.create_context(instructions, initial_messages)
 
+    wrapper = test["baseline"].get("wrapper", None)
+    if wrapper:
+        base_context.build_wrapper(wrapper)
+    
     prompts = technique["prompts"]
 
     runs = []

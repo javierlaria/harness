@@ -5,16 +5,39 @@
     "baseline" : {
         "expected_answers" : true,
         "rubric" : true,
-
+        "wrapper" : {
+            "in" : "<answer>",
+            "out" : "</answer>"
+        },
         "criterions" : {
             "accuracy" : {
-                "weight" : 0.5
+                "weight" : 0.5,
+                "evaluators" : [
+                    {
+                        "type" : "exact_match",
+                        "target" : "expected_answer"
+                    }
+                ]
             },
+
             "adherance" : {
-                "weight" : 0.3
+                "weight" : 0.3,
+                "evaluators" : [
+                    {
+                        "type" : "min_word_count",
+                        "limit" : 0
+                    },
+                    {
+                        "type" : "max_word_count",
+                        "limit" : 2
+                    }
+                ]
             },
+
             "relevance" : {
-                "weight" : 0.2
+                "weight" : 0.2,
+                "evaluators" : [
+                ]
             }
         }
     }

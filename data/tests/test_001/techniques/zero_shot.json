@@ -5,10 +5,6 @@
     "context" : {
         "instructions": "You are an assistant. Answer accurately and concisely.",
         "problem": "Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
-        "wrapper" : {
-            "in" : "<answer>",
-            "out" : "</answer>"
-        },
         "initial_messages" : []
     },
 
@@ -18,47 +14,47 @@
 
     "prompts" : [
         {
-            "id" : "prompt_001",
+            "id" : "001",
             "input" : "An elephant trampling a rhino.",
             "expected" : "Strength"
         },
         {
-            "id" : "prompt_002",
+            "id" : "002",
             "input" : "An assassin slicing a throat.",
             "expected" : "Dexterity"
         },
         {
-            "id" : "prompt_003",
+            "id" : "003",
             "input" : "A governor convincing a mob.",
             "expected" : "Intelligence"
         },
         {
-            "id" : "prompt_004",
+            "id" : "004",
             "input" : "A King invading a rival kingdom.",
             "expected" : "Strength"
         },
         {
-            "id" : "prompt_005",
+            "id" : "005",
             "input" : "A scientist throwing a knife to test his strength.",
             "expected" : "Intelligence"
         },
         {
-            "id" : "prompt_006",
+            "id" : "006",
             "input" : "A giant monster running in fear of a venomous plant.",
             "expected" : "Intelligence"
         },
         {
-            "id" : "prompt_007",
+            "id" : "007",
             "input" : "A child scoring ten goals in a football match.",
             "expected" : "Dexterity"
         },
         {
-            "id" : "prompt_008",
-            "input" : "A lycanthrope locking himself in a cellar during a full moon.",
+            "id" : "008",
+            "input" : "A lycanthrope locking himself in a cell during a full moon.",
             "expected" : "Intelligence"
         },
         {
-            "id" : "prompt_009",
+            "id" : "009",
             "input" : "A construction worker carrying a 40 kilogram sand bag.",
             "expected" : "Strength"
         }

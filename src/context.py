@@ -26,6 +26,10 @@ class Context():
             "content": content
             })
 
+    def build_wrapper(self, wrapper: dict):
+        wrapper_prompt = f"Your final answer must be enclosed between {wrapper["in"]} and {wrapper["out"]}"
+        self.instructions + wrapper_prompt
+
     def copy(self):
         return Context(
             instructions=self.instructions,
