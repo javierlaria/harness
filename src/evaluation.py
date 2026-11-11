@@ -66,14 +66,29 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None = None)
         total_score = 0
         total_weight = 0
 
-        for criterion in score_criterions:
+        for name, criterion in score_criterions.items():
+            print(f" - Testing {name}.")
             evaluations = []
             weight = criterion.get("weight", 0.0)
 
             for evaluator in criterion.get("evaluators", []):
                 evaluation = run_evaluation(evaluator, response, expected_answer, wrapper)
+                print(f"Test: {evaluation.get("type")} -> {evaluation.get("score")}")
+                evaluations.append(evaluation)
+
+            if len(evaluations) == 0:
+                print("\nNo evaluators assigned.")
+                continue
+
+            criterion_score = sum(evaluation.get("score", 0.0) for evaluation in evaluations) / len(evaluations)
+            print(f"Score: {criterion_score}\n")
             
-        
+            total_score += criterion_score * weight
+            total_weight += weight
+
+        if total_weight > 0:
+            result["overall_score"] = total_score / total_weight
+
         result["status"] = "complete"
 
     elif expected_answer is not None:
@@ -81,7 +96,7 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None = None)
 
     return result
 
-def run_evaluation(evaluator: str, response: str, expected_answer: str, wrapper) -> float:
+def run_evaluation(evaluator: str, response: str, expected_answer: str, wrapper) -> dict:
     evaluator_type = evaluator["type"]
 
     match evaluator_type:
@@ -108,19 +123,6 @@ def run_evaluation(evaluator: str, response: str, expected_answer: str, wrapper)
 
     return {
         "type" : evaluator_type,
-        "result" : result
+        "result" : result,
+        "score" : 5 if result else 0
     }
-
-
-def calculate_weighted_scores(score_criterions: dict) -> float | None:
-    scores = {name : score for name,  in score_criterions.items()}
-
-    if not scores: # nothing to score on
-        return None
-
-    total_weight = sum(criterion[name]["weight"] for name in scores.keys())
-
-    if total_weight == 0: # weights shouldnt really be 0 
-        return None
-
-    return sum(score * criterion[name]["weight"] for name, score in scores.items()) / total_weight # weighted sum
