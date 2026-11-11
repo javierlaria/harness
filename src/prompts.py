@@ -35,7 +35,7 @@ def list_techniques(test_id: str) -> list[dict]:
 
     return techniques
 
-def load_experiments(test_id: str, technique_id: str) -> dict:
+def load_experiment(test_id: str, technique_id: str) -> dict:
     path = "/".join(pathlib.Path(os.getenv(["TESTS_FILEPATH"])), test_id)
 
     test = load_json("/".join(path, "test.json"))
