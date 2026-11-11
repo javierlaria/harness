@@ -14,7 +14,7 @@ def load_json(filepath:str) -> dict:
         return json.load(file)
 
 def list_tests() -> list[dict]:
-    path = pathlib.Path(os.getenv(["TESTS_FILEPATH"]))
+    path = pathlib.Path(os.getenv("TESTS_FILEPATH"))
 
     tests = []
 
@@ -25,7 +25,7 @@ def list_tests() -> list[dict]:
     return tests
 
 def list_techniques(test_id: str) -> list[dict]:
-    path = "/".join(pathlib.Path(os.getenv(["TESTS_FILEPATH"])), test_id, "techniques")
+    path = pathlib.Path(os.getenv("TESTS_FILEPATH")) /  test_id / "techniques"
 
     techniques = []
 
@@ -36,11 +36,11 @@ def list_techniques(test_id: str) -> list[dict]:
     return techniques
 
 def load_experiment(test_id: str, technique_id: str) -> dict:
-    path = "/".join(pathlib.Path(os.getenv(["TESTS_FILEPATH"])), test_id)
+    path = pathlib.Path(os.getenv("TESTS_FILEPATH")) / test_id
 
-    test = load_json("/".join(path, "test.json"))
+    test = load_json(path / "test.json")
 
-    technique = load_json("/".join(path,"techniques", str(technique_id), ".json"))
+    technique = load_json(path / "techniques" / f"{technique_id}.json")
 
     return {
         "test" : test,

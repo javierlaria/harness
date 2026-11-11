@@ -16,19 +16,19 @@ import src.testing as tst
 
 dotenv.load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
-def select_item(item: list, label: str) -> dict:
-    if not item:
+def select_item(items: list, label: str) -> dict:
+    if not items:
         raise ValueError("Main: No ", label)
 
-    for i, item in enumerate(item):
+    for i, item in enumerate(items):
         print(f"{i+1} : {item.get("name", item.get("test_id"))}")
 
     while True:
         try:
             selection = int(input(f"Select {label}: "))
 
-            if 1 <= selection <= len(item):
-                return item[selection - 1]
+            if 1 <= selection <= len(items):
+                return items[selection - 1]
         except ValueError:
             pass
         print(f"Select a correct {label}.")
@@ -53,25 +53,25 @@ def chatting(client, model, save: bool = False):
         )
 
         print("\n")
-        print(f"                                                             Total tokens:   {response.usage.total_tokens}")
-        print(f"                                                             Total duration: {times["total"]}")
+        print(f"                                                               Total tokens:    {response.usage.total_tokens}")
+        print(f"                                                               Total duration:  {times["total"]:.6f}")
 
     if not save: # just in case
-        match input("Save? (yes or no)"):
+        match input("\nSave? (yes or no): ").lower().strip():
             case "yes", "y", "1":
                 save = True
             case _:
                 save = False
     if save:
-        save_name = input("\nChat filename (name.json): ")
-        context.save_to(str(os.getenv("CONTEXTS_FILEPATH"))+str(save_name)+".json")
+        save_name = str(input("\nChat filename (name.json): "))
+        context.save_to("/".join(os.getenv("CONTEXTS_FILEPATH"), save_name + ".json"))
 
 def testing(client, model, save: bool = False):
     tests = pr.list_tests()
     selected_test = select_item(tests, "test")
     test_id = selected_test["test_id"]
 
-    techniques = pr.list_techniques()
+    techniques = pr.list_techniques(test_id)
     selected_technique = select_item(techniques, "technique")
     technique_id = selected_technique["technique_id"]
 
@@ -86,11 +86,19 @@ def testing(client, model, save: bool = False):
             pass # dont raise to keep loop
         print("Enter a value >= 1")
 
+    if not save: # just in case
+            match input("\nSave? (yes or no): ").lower().strip():
+                case "yes", "y", "1":
+                    save = True
+                case _:
+                    save = False
+
     result = tst.run_test(
         complete_test=experiment,
         client=client,
         model=model,
-        repetitions=repetitions
+        repetitions=repetitions,
+        save=save
     )
     print("Run ID: ", result["run_id"])
     print("Summary: ", result["summary"])

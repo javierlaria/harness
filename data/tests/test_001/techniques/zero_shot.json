@@ -3,7 +3,7 @@
     "name" : "Zero-shot",
 
     "context" : {
-        "instructions": "You are an assistant. Answer accurately and concisely. All the answers to questions must be wrapped around <answer>answer</answer>.",
+        "instructions": "You are an assistant. Answer accurately and concisely.",
         "problem": "Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
         "wrapper" : {
             "in" : "<answer>",
@@ -16,7 +16,7 @@
         "strategy" : "independent"
     },
 
-    "promtps" : [
+    "prompts" : [
         {
             "id" : "prompt_001",
             "input" : "An elephant trampling a rhino.",

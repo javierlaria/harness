@@ -15,21 +15,21 @@ def extract_usage(response) -> dict:
 
     if usage is None:
         return {
-            "total" : None,
+            "total_tokens" : None,
             "input_tokens" : None,
             "output_tokens" : None,
             "cached_tokens" : None,
             "reasoning_tokens" : None
         }
     return {
-        "total" : response.usage.total_tokens,
+        "total_tokens" : response.usage.total_tokens,
         "input_tokens" : response.usage.input_tokens,
         "output_tokens" : response.usage.output_tokens,
         "cached_tokens" : response.usage.input_tokens_details.cached_tokens,
         "reasoning_tokens" : response.usage.output_tokens_details.reasoning_tokens
     }
 
-def run_test(complete_test: dict, client, model: str, repetitions: int = 1) -> dict:
+def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save: bool = False) -> dict:
     test = complete_test["test"]
     technique = complete_test["technique"]
 
@@ -39,7 +39,7 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1) -> d
     execution = technique.get("execution", {})
     strategy = execution.get("strategy", "independent")
 
-    if not strategy not in ("independent", "sequential", "combined"):
+    if not strategy in ("independent", "sequential", "combined"):
         raise ValueError(f"Testing: Unsupported strategy: {strategy}")
 
     if repetitions < 1:
@@ -190,9 +190,7 @@ def build_result(test, technique, model, strategy, repetitions, runs) -> dict:
     scores = [response["evaluation"]["overall_score"] for response in responses if response["evaluation"]["overall_score"] is not None]
 
     result_summary = {
-        "overall_score" : {
-            sum(scores) / len(scores) if scores else None
-        },
+        "overall_score" : sum(scores) / len(scores) if scores else None,
         "num_evaluated_responses" : len(scores),
         "total_response" : len(responses),
         "input_tokens" : sum(input_tokens),
@@ -227,12 +225,12 @@ def save_result(result: dict) -> pathlib.Path:
     safe_model_id = model_id.replace("/", "_").replace(":", "_")
 
     dir = (
-        pathlib.Path(os.getenv(["RESULTS_FILEPATH"])) / test_id / technique_id / safe_model_id
+        pathlib.Path(os.getenv("RESULTS_FILEPATH")) / test_id / technique_id / safe_model_id
     )
 
     dir.mkdir(parents= True, exist_ok = True)
 
-    filepath = "/".join(dir, "".join(str(result["run_id"]), ".json"))
+    filepath = dir / f"{result["run_id"]}.json"
 
     with filepath.open("w", encoding= "utf-8") as file:
         json.dump(result, file, indent= 4, ensure_ascii= False)

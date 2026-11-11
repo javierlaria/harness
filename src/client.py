@@ -18,7 +18,7 @@ def create_client(provider: str) -> OpenAI:
 def handle_request(user_input: str, context: ctx.Context, client: OpenAI, model: str, print_answer: bool = True):
     context.add_message("user", user_input)
 
-    start_time = time.perf_counter
+    start_time = time.perf_counter()
     
     first_response_time = None
     first_token_time = None
@@ -28,6 +28,8 @@ def handle_request(user_input: str, context: ctx.Context, client: OpenAI, model:
     complete_answer = ""
     end_message = None
 
+    if print_answer:
+        print("\n")
     for event in response:
         match event.type:
 

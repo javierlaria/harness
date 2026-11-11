@@ -26,7 +26,7 @@ class Context():
             "content": content
             })
 
-    def copy(self) -> Context:
+    def copy(self):
         return Context(
             instructions=self.instructions,
             messages= copy.deepcopy(self.messages)
@@ -47,8 +47,10 @@ class Context():
         with filepath.open("w", encoding="utf-8") as file:
             json.dump(data, file, indent=4, ensure_ascii= False)
 
+        print(f"Saved to {filepath}")
+
     @classmethod
-    def load_from(cls, filepath: str) -> Context:
+    def load_from(cls, filepath: str):
         filepath = pathlib.Path(filepath)
 
         if not filepath.exists():
