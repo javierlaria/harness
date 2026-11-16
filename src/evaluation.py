@@ -33,6 +33,7 @@ def exact_match(response: str, expected: str, wrapper: dict) -> bool:
 def normalized_matching(response: str, expected: str, wrapper: dict) -> float:
     if wrapper:
         expected = wrap(expected, wrapper)
+    print(response,"  ", expected, "   small_check")
     return float(normalize(response) == normalize(expected))
 
 def keywords(response: str, keywords: list[str]) -> bool:
@@ -86,14 +87,15 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
             result["evaluations"][name] = evaluations
 
             criterion_score = sum(evaluation.get("score", 0.0) for evaluation in evaluations) / len(evaluations)
-            print(f"Score: {criterion_score}\n")
-            
+
             total_score += criterion_score * weight
             total_weight += weight
 
+            print(f"Score: {criterion_score} * {weight} = {total_score}\n")
+            
         if total_weight > 0:
             result["overall_score"] = total_score / total_weight
-
+        print(f"Overall score: {result["overall_score"]}")
         result["status"] = "complete"
 
     elif expected_answer is not None:
@@ -107,8 +109,6 @@ def run_evaluation(evaluator: str, response: str, expected_answer: str, wrapper:
     match evaluator_type:
         case "exact_match":
             target = (expected_answer if evaluator["target"] == "expected_answer" else evaluator["target"])
-            if wrapper:
-                target = wrap(target, wrapper)
             result = exact_match(response, target, wrapper)
 
         case "keywords":

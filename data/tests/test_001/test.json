@@ -28,7 +28,7 @@
                     },
                     {
                         "type" : "max_word_count",
-                        "limit" : 2
+                        "limit" : 1
                     }
                 ]
             },

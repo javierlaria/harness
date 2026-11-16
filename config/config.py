@@ -32,7 +32,7 @@ def model_selection(provider, _model= None):
     if _model is not None:
         if _model == "debug":
             selected_model = _model
-            print("Provider: ", provider)
+            print("\nProvider: ", provider)
             print("Client: ", None)
             print("Model: ", selected_model)
 
@@ -55,7 +55,7 @@ def model_selection(provider, _model= None):
 
     api_client = client.create_client(provider)
 
-    print("Provider: ", provider)
+    print("\nProvider: ", provider)
     print("Client: ", api_client)
     print("Model: ", selected_model)
 

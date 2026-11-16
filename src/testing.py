@@ -11,7 +11,6 @@ import src.evaluation as ev
 
 
 def extract_usage(response) -> dict:
-
     if response is None:
         return {
             "total_tokens" : None,
@@ -53,7 +52,7 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save
     if repetitions < 1:
         raise ValueError("Testing: At least one repetition.")
     
-    instructions = " ".join([technique["context"].get("instructions", ""), technique["context"].get("problem", "")])
+    instructions = "\n".join([technique["context"].get("instructions", ""), technique["context"].get("problem", "")])
 
     initial_messages = technique["context"].get("initial_messages", [])
 
@@ -62,15 +61,17 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save
     baseline = test.get("baseline", None)
     if baseline:
         wrapper = baseline.get("wrapper", None)
+        print("wrapper: ", wrapper)
         if wrapper:
             base_context.build_wrapper(wrapper)
+    print("Instructions: ", base_context.instructions)
     
     prompts = technique["prompts"]
 
     runs = []
 
     for repetition in range(1, repetitions + 1):
-        print(f"Repetition {repetition}\n")
+        print(f"\nRepetition {repetition}")
 
         current_context = base_context.copy()
         responses = []
@@ -185,15 +186,16 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save
         repetitions= repetitions,
         runs= runs
     )
-    if save:
-        save_result(result=result)
 
+    if save:
+        filepath = save_result(result=result)
+        print(f"Result saved in {filepath}")
     return result
 
 def build_result(test, technique, model, strategy, repetitions, runs) -> dict:
     if model == "debug":
         return {
-                "run_id": str(model) + str(uuid.uuid4()),
+                "run_id": str(uuid.uuid4()),
                 "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 "test" : test,
                 "technique" : technique,
@@ -234,7 +236,7 @@ def build_result(test, technique, model, strategy, repetitions, runs) -> dict:
     }
 
     return {
-        "run_id": str(model) + str(uuid.uuid4()),
+        "run_id": str(uuid.uuid4()),
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "test" : test,
         "technique" : technique,
@@ -253,9 +255,9 @@ def save_result(result: dict) -> pathlib.Path:
     test_id = result["test"]["test_id"]
     technique_id = result["technique"]["technique_id"]
     model_id = result["model"]["model_id"]
-
-    safe_model_id = model_id.replace("/", "_").replace(":", "_")
-
+    print("Model id: ", model_id)
+    safe_model_id = model_id.replace("/", "_").replace(":", "_").replace("-", "_")
+    print("Safe model id: ", safe_model_id)
     dir = (
         pathlib.Path(os.getenv("RESULTS_FILEPATH")) / test_id / technique_id / safe_model_id
     )

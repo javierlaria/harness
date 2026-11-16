@@ -10,7 +10,7 @@ import config.config as cfg
 
 import src.client as cl
 import src.context as ctx
-import src.prompts as pr
+import src.loader as l
 import src.evaluation as ev
 import src.testing as tst
 
@@ -65,7 +65,7 @@ def chatting(client, model, save: bool = False):
 
     if not save: # just in case
         match input("\nSave? (yes or no): ").lower().strip():
-            case "yes", "y", "1":
+            case "yes" | "y" | "1":
                 save = True
             case _:
                 save = False
@@ -75,11 +75,11 @@ def chatting(client, model, save: bool = False):
 
 def testing(client, model, save: bool = False):
 
-    tests = pr.list_tests()
+    tests = l.list_tests()
     selected_test = select_item(tests, "test")
     test_id = selected_test["test_id"]
 
-    techniques = pr.list_techniques(test_id)
+    techniques = l.list_techniques(test_id)
     selected_technique = select_item(techniques, "technique")
     technique_id = selected_technique["technique_id"]
 
@@ -87,7 +87,7 @@ def testing(client, model, save: bool = False):
         print("Main: No test_id or technique_id found")
         return
 
-    experiment = pr.load_experiment(test_id, technique_id)
+    experiment = l.load_experiment(test_id, technique_id)
 
     while True:
         try:
@@ -99,8 +99,9 @@ def testing(client, model, save: bool = False):
         print("Enter a value >= 1")
 
     if not save: # just in case
-            match input("\nSave? (yes or no): ").lower().strip():
-                case "yes", "y", "1":
+            save_check = save_check = input("\nSave? (yes or no): ").lower().strip()
+            match save_check:
+                case "yes" | "y" | "1":
                     save = True
                 case _:
                     save = False
@@ -116,11 +117,11 @@ def testing(client, model, save: bool = False):
     print("Summary: ", result["summary"])
 
 def debug_testing(client = None, model = "debug", save: bool = False, set_selection: int = 1):
-    tests = pr.list_tests()
+    tests = l.list_tests()
     selected_test = select_item(tests, "test", set_selection)
     test_id = selected_test["test_id"]
 
-    techniques = pr.list_techniques(test_id)
+    techniques = l.list_techniques(test_id)
     selected_technique = select_item(techniques, "technique", set_selection)
     technique_id = selected_technique["technique_id"]
 
@@ -128,20 +129,14 @@ def debug_testing(client = None, model = "debug", save: bool = False, set_select
         print("Main: No test_id or technique_id found")
         return
     
-    experiment = pr.load_experiment(test_id, technique_id)
-    
-    while True:
-        try:
-            repetitions = int(input("\nNumber of repetitions: "))
-            if repetitions >= 1:
-                break
-        except ValueError:
-            pass # dont raise to keep loop
-        print("Enter a value >= 1")
+    experiment = l.load_experiment(test_id, technique_id)
+
+    repetitions = 1
 
     if not save: # just in case
-            match input("\nSave? (yes or no): ").lower().strip():
-                case "yes", "y", "1":
+            save_check = input("\nSave? (yes or no): ").lower().strip()
+            match save_check:
+                case "yes" | "y" |"1":
                     save = True
                 case _:
                     save = False
@@ -178,7 +173,7 @@ def main():
                 testing(client, model)
 
             case "3":
-                debug_testing(client, model, 1)
+                debug_testing(client, model, set_selection=1)
 
     except OpenAIError as error:
         print("\nMain: API request failed: ", {error})

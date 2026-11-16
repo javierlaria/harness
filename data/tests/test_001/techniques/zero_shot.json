@@ -4,7 +4,7 @@
 
     "context" : {
         "instructions": "You are an assistant. Answer accurately and concisely.",
-        "problem": "Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
+        "problem": "Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes.",
         "initial_messages" : []
     },
 
