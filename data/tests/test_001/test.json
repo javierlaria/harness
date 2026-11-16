@@ -19,7 +19,7 @@
                 ]
             },
 
-            "adherance" : {
+            "adherence" : {
                 "weight" : 0.3,
                 "evaluators" : [
                     {

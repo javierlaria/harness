@@ -33,7 +33,6 @@ def exact_match(response: str, expected: str, wrapper: dict) -> bool:
 def normalized_matching(response: str, expected: str, wrapper: dict) -> float:
     if wrapper:
         expected = wrap(expected, wrapper)
-    print(response,"  ", expected, "   small_check")
     return float(normalize(response) == normalize(expected))
 
 def keywords(response: str, keywords: list[str]) -> bool:
@@ -63,7 +62,7 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
     }
 
     if expected_answer is not None and baseline.get("expected_answers", False):
-        result["expectance"] = normalized_matching(response, expected_answer, wrapper)
+        result["expected_match"] = normalized_matching(response, expected_answer, wrapper)
 
     if score_criterions: 
 

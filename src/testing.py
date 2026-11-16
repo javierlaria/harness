@@ -4,6 +4,8 @@ import os
 import datetime
 import uuid
 
+import numpy as np
+
 import src.context as ctx
 import src.client as cl
 import src.evaluation as ev
@@ -224,11 +226,18 @@ def build_result(test, technique, model, strategy, repetitions, runs) -> dict:
     scores = [response["evaluation"]["overall_score"] for response in responses if response["evaluation"]["overall_score"] is not None]
 
     result_summary = {
-        "overall_score" : sum(scores) / len(scores) if scores else None,
+        "average_overall_score" : np.mean(scores) if scores else None,
+        "median_score" : np.median(scores) if scores else None,
+        "min_score" : min(scores),
+        "max_score" : max(scores),
         "num_evaluated_responses" : len(scores),
-        "total_response" : len(responses),
+        "total_responses" : len(responses),
         "input_tokens" : sum(input_tokens),
+        "average_input_tokens" : np.mean(input_tokens),
+        "median_input_tokens" : np.median(input_tokens),
         "output_tokens" : sum(output_tokens),
+        "average_output_tokens" : np.mean(output_tokens),
+        "median_output_tokens" : np.median(output_tokens),
         "total_tokens" : sum(total_tokens),
         "total_duration" : sum(total_durations),
         "average_duration" : (sum(total_durations) / len(total_durations) if total_durations else None),
