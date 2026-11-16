@@ -3,7 +3,7 @@
     "name" : "Instruction_based",
 
     "context" : {
-        "instructions": "You are an assistant. Answer accurately and concisely. Strength represents physical power, force, endurance, and resistance. Actions involving might and power belong here. Dexterity represents precision, technique, agility and coordination. Accuracy and movements belong here. Intelligence represents reasoning, comprehension, strategy, planning and judgement. Actions that involve information gathering, situation awareness and priority weighting belong here.",
+        "instructions": "You are an assistant. Answer accurately and concisely. \nStrength: power, endurance, resistance, overpowering, carrying heavy objects, using force, domination. \nDexterity: precision, coordination, reflexes, technique, accuracy, motor control, movement. \nIntelligence: reasoning, comprehension, intuition, problem solving, decision making, recognizing danger, evaluating situations. \n\n Rules: Identify the main action or purpose described. \nConsider why and action is performed. \nRecognize the objective of the action. \nRespond with the most appropiate attribute.",
         "problem": "Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes.",
         "initial_messages" : []
     },
