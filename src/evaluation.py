@@ -56,7 +56,7 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
     score_criterions = baseline.get("criterions", None)
     result = {
         "expectance" : None,
-        "evaluations" : None,
+        "evaluations" : {},
         "overall_score" : None,
         "status" : "pending"
     }
@@ -80,11 +80,11 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
                 evaluations.append(evaluation)
 
             if len(evaluations) == 0:
-                print("No evaluators assigned.")
+                print("No evaluators assigned.\n")
                 continue
 
-            result["evaluations"] = evaluations
-            
+            result["evaluations"][name] = evaluations
+
             criterion_score = sum(evaluation.get("score", 0.0) for evaluation in evaluations) / len(evaluations)
             print(f"Score: {criterion_score}\n")
             
