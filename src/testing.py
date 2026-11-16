@@ -11,9 +11,16 @@ import src.evaluation as ev
 
 
 def extract_usage(response) -> dict:
-    usage = response.usage
 
-    if usage is None:
+    if response is None:
+        return {
+            "total_tokens" : None,
+            "input_tokens" : None,
+            "output_tokens" : None,
+            "cached_tokens" : None,
+            "reasoning_tokens" : None
+        }
+    if response.usage is None:
         return {
             "total_tokens" : None,
             "input_tokens" : None,
@@ -35,6 +42,7 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save
 
     test_id = test["test_id"]
     technique_id = technique["technique_id"]
+    print(f"Test id: {test_id}  -  Technique id: {technique_id}")
 
     execution = technique.get("execution", {})
     strategy = execution.get("strategy", "independent")
@@ -51,9 +59,11 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save
 
     base_context = ctx.create_context(instructions, initial_messages)
 
-    wrapper = test["baseline"].get("wrapper", None)
-    if wrapper:
-        base_context.build_wrapper(wrapper)
+    baseline = test.get("baseline", None)
+    if baseline:
+        wrapper = baseline.get("wrapper", None)
+        if wrapper:
+            base_context.build_wrapper(wrapper)
     
     prompts = technique["prompts"]
 
@@ -82,7 +92,7 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save
                         print_answer= False
                     )
 
-                    evaluation = ev.evaluate_response(prompt, complete_answer)
+                    evaluation = ev.evaluate_response(prompt, complete_answer, baseline)
 
                     responses.append({
                         "prompt_id" : prompt.get("id", "noid"),
@@ -175,12 +185,29 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save
         repetitions= repetitions,
         runs= runs
     )
-
-    save_result(result=result)
+    if save:
+        save_result(result=result)
 
     return result
 
 def build_result(test, technique, model, strategy, repetitions, runs) -> dict:
+    if model == "debug":
+        return {
+                "run_id": str(model) + str(uuid.uuid4()),
+                "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                "test" : test,
+                "technique" : technique,
+                "model" : {
+                    "model_id" : model
+                },
+                "execution" : {
+                    "strategy" : strategy,
+                    "repetitions" : repetitions
+                },
+                "runs" : runs,
+                "summary" : {}
+            }
+
     responses = [response for run in runs for response in run.get("responses")]
 
     input_tokens = [response["usage"]["input_tokens"] for response in responses if response["usage"]["input_tokens"] is not None]
@@ -207,7 +234,7 @@ def build_result(test, technique, model, strategy, repetitions, runs) -> dict:
     }
 
     return {
-        "run_id": str(uuid.uuid4()),
+        "run_id": str(model) + str(uuid.uuid4()),
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "test" : test,
         "technique" : technique,

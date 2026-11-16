@@ -1,0 +1,687 @@
+{
+    "run_id": "debug3dad3627-7eb4-48f4-8454-13374a472134",
+    "timestamp": "2026-11-16T15:05:17.956713+00:00",
+    "test": {
+        "test_id": "test_001",
+        "name": "Classify attributes",
+        "description": "Evaluate how the model follows basic classification instructions for relatively subjective descriptions.",
+        "baseline": {
+            "expected_answers": true,
+            "wrapper": {
+                "in": "<answer>",
+                "out": "</answer>"
+            },
+            "criterions": {
+                "accuracy": {
+                    "weight": 0.7,
+                    "evaluators": [
+                        {
+                            "type": "exact_match",
+                            "target": "expected_answer"
+                        }
+                    ]
+                },
+                "adherance": {
+                    "weight": 0.3,
+                    "evaluators": [
+                        {
+                            "type": "min_word_count",
+                            "limit": 0
+                        },
+                        {
+                            "type": "max_word_count",
+                            "limit": 1
+                        }
+                    ]
+                },
+                "relevance": {
+                    "weight": 0.0,
+                    "evaluators": []
+                }
+            }
+        }
+    },
+    "technique": {
+        "technique_id": "zero_shot",
+        "name": "Zero-shot",
+        "context": {
+            "instructions": "You are an assistant. Answer accurately and concisely.",
+            "problem": "Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
+            "initial_messages": []
+        },
+        "execution": {
+            "strategy": "independent"
+        },
+        "prompts": [
+            {
+                "id": "001",
+                "input": "An elephant trampling a rhino.",
+                "expected": "Strength"
+            },
+            {
+                "id": "002",
+                "input": "An assassin slicing a throat.",
+                "expected": "Dexterity"
+            },
+            {
+                "id": "003",
+                "input": "A governor convincing a mob.",
+                "expected": "Intelligence"
+            },
+            {
+                "id": "004",
+                "input": "A King invading a rival kingdom.",
+                "expected": "Strength"
+            },
+            {
+                "id": "005",
+                "input": "A scientist throwing a knife to test his strength.",
+                "expected": "Intelligence"
+            },
+            {
+                "id": "006",
+                "input": "A giant monster running in fear of a venomous plant.",
+                "expected": "Intelligence"
+            },
+            {
+                "id": "007",
+                "input": "A child scoring ten goals in a football match.",
+                "expected": "Dexterity"
+            },
+            {
+                "id": "008",
+                "input": "A lycanthrope locking himself in a cell during a full moon.",
+                "expected": "Intelligence"
+            },
+            {
+                "id": "009",
+                "input": "A construction worker carrying a 40 kilogram sand bag.",
+                "expected": "Strength"
+            }
+        ]
+    },
+    "model": {
+        "model_id": "debug"
+    },
+    "execution": {
+        "strategy": "independent",
+        "repetitions": 1
+    },
+    "runs": [
+        {
+            "repetition": 1,
+            "responses": [
+                {
+                    "prompt_id": "001",
+                    "input": "An elephant trampling a rhino.",
+                    "answer": "DEBUGGING, doesnt count: An elephant trampling a rhino.",
+                    "usage": {
+                        "total_tokens": null,
+                        "input_tokens": null,
+                        "output_tokens": null,
+                        "cached_tokens": null,
+                        "reasoning_tokens": null
+                    },
+                    "times": {
+                        "confirmation": 1.2000000424450263e-06,
+                        "first_token": 2.2999993234407157e-06,
+                        "total": 3.200000719516538e-06
+                    },
+                    "evaluation": {
+                        "expectance": null,
+                        "score_criterions": {
+                            "accuracy": {
+                                "weight": 0.7,
+                                "evaluators": [
+                                    {
+                                        "type": "exact_match",
+                                        "target": "expected_answer"
+                                    }
+                                ]
+                            },
+                            "adherance": {
+                                "weight": 0.3,
+                                "evaluators": [
+                                    {
+                                        "type": "min_word_count",
+                                        "limit": 0
+                                    },
+                                    {
+                                        "type": "max_word_count",
+                                        "limit": 2
+                                    }
+                                ]
+                            },
+                            "relevance": {
+                                "weight": 0.0,
+                                "evaluators": []
+                            }
+                        },
+                        "overall_score": 0.75,
+                        "status": "complete"
+                    }
+                },
+                {
+                    "prompt_id": "002",
+                    "input": "An assassin slicing a throat.",
+                    "answer": "DEBUGGING, doesnt count: An assassin slicing a throat.",
+                    "usage": {
+                        "total_tokens": null,
+                        "input_tokens": null,
+                        "output_tokens": null,
+                        "cached_tokens": null,
+                        "reasoning_tokens": null
+                    },
+                    "times": {
+                        "confirmation": 1.0000003385357559e-06,
+                        "first_token": 1.7999991541728377e-06,
+                        "total": 2.599999788799323e-06
+                    },
+                    "evaluation": {
+                        "expectance": null,
+                        "score_criterions": {
+                            "accuracy": {
+                                "weight": 0.7,
+                                "evaluators": [
+                                    {
+                                        "type": "exact_match",
+                                        "target": "expected_answer"
+                                    }
+                                ]
+                            },
+                            "adherance": {
+                                "weight": 0.3,
+                                "evaluators": [
+                                    {
+                                        "type": "min_word_count",
+                                        "limit": 0
+                                    },
+                                    {
+                                        "type": "max_word_count",
+                                        "limit": 2
+                                    }
+                                ]
+                            },
+                            "relevance": {
+                                "weight": 0.0,
+                                "evaluators": []
+                            }
+                        },
+                        "overall_score": 0.75,
+                        "status": "complete"
+                    }
+                },
+                {
+                    "prompt_id": "003",
+                    "input": "A governor convincing a mob.",
+                    "answer": "DEBUGGING, doesnt count: A governor convincing a mob.",
+                    "usage": {
+                        "total_tokens": null,
+                        "input_tokens": null,
+                        "output_tokens": null,
+                        "cached_tokens": null,
+                        "reasoning_tokens": null
+                    },
+                    "times": {
+                        "confirmation": 8.999995770864189e-07,
+                        "first_token": 1.7999991541728377e-06,
+                        "total": 2.4000000848900527e-06
+                    },
+                    "evaluation": {
+                        "expectance": null,
+                        "score_criterions": {
+                            "accuracy": {
+                                "weight": 0.7,
+                                "evaluators": [
+                                    {
+                                        "type": "exact_match",
+                                        "target": "expected_answer"
+                                    }
+                                ]
+                            },
+                            "adherance": {
+                                "weight": 0.3,
+                                "evaluators": [
+                                    {
+                                        "type": "min_word_count",
+                                        "limit": 0
+                                    },
+                                    {
+                                        "type": "max_word_count",
+                                        "limit": 2
+                                    }
+                                ]
+                            },
+                            "relevance": {
+                                "weight": 0.0,
+                                "evaluators": []
+                            }
+                        },
+                        "overall_score": 0.75,
+                        "status": "complete"
+                    }
+                },
+                {
+                    "prompt_id": "004",
+                    "input": "A King invading a rival kingdom.",
+                    "answer": "DEBUGGING, doesnt count: A King invading a rival kingdom.",
+                    "usage": {
+                        "total_tokens": null,
+                        "input_tokens": null,
+                        "output_tokens": null,
+                        "cached_tokens": null,
+                        "reasoning_tokens": null
+                    },
+                    "times": {
+                        "confirmation": 6.999998731771484e-07,
+                        "first_token": 1.6000012692529708e-06,
+                        "total": 2.1000014385208488e-06
+                    },
+                    "evaluation": {
+                        "expectance": null,
+                        "score_criterions": {
+                            "accuracy": {
+                                "weight": 0.7,
+                                "evaluators": [
+                                    {
+                                        "type": "exact_match",
+                                        "target": "expected_answer"
+                                    }
+                                ]
+                            },
+                            "adherance": {
+                                "weight": 0.3,
+                                "evaluators": [
+                                    {
+                                        "type": "min_word_count",
+                                        "limit": 0
+                                    },
+                                    {
+                                        "type": "max_word_count",
+                                        "limit": 2
+                                    }
+                                ]
+                            },
+                            "relevance": {
+                                "weight": 0.0,
+                                "evaluators": []
+                            }
+                        },
+                        "overall_score": 0.75,
+                        "status": "complete"
+                    }
+                },
+                {
+                    "prompt_id": "005",
+                    "input": "A scientist throwing a knife to test his strength.",
+                    "answer": "DEBUGGING, doesnt count: A scientist throwing a knife to test his strength.",
+                    "usage": {
+                        "total_tokens": null,
+                        "input_tokens": null,
+                        "output_tokens": null,
+                        "cached_tokens": null,
+                        "reasoning_tokens": null
+                    },
+                    "times": {
+                        "confirmation": 6.000009307172149e-07,
+                        "first_token": 1.3000008038943633e-06,
+                        "total": 1.8000009731622413e-06
+                    },
+                    "evaluation": {
+                        "expectance": null,
+                        "score_criterions": {
+                            "accuracy": {
+                                "weight": 0.7,
+                                "evaluators": [
+                                    {
+                                        "type": "exact_match",
+                                        "target": "expected_answer"
+                                    }
+                                ]
+                            },
+                            "adherance": {
+                                "weight": 0.3,
+                                "evaluators": [
+                                    {
+                                        "type": "min_word_count",
+                                        "limit": 0
+                                    },
+                                    {
+                                        "type": "max_word_count",
+                                        "limit": 2
+                                    }
+                                ]
+                            },
+                            "relevance": {
+                                "weight": 0.0,
+                                "evaluators": []
+                            }
+                        },
+                        "overall_score": 0.75,
+                        "status": "complete"
+                    }
+                },
+                {
+                    "prompt_id": "006",
+                    "input": "A giant monster running in fear of a venomous plant.",
+                    "answer": "DEBUGGING, doesnt count: A giant monster running in fear of a venomous plant.",
+                    "usage": {
+                        "total_tokens": null,
+                        "input_tokens": null,
+                        "output_tokens": null,
+                        "cached_tokens": null,
+                        "reasoning_tokens": null
+                    },
+                    "times": {
+                        "confirmation": 8.000006346264854e-07,
+                        "first_token": 1.8999999156221747e-06,
+                        "total": 2.4000000848900527e-06
+                    },
+                    "evaluation": {
+                        "expectance": null,
+                        "score_criterions": {
+                            "accuracy": {
+                                "weight": 0.7,
+                                "evaluators": [
+                                    {
+                                        "type": "exact_match",
+                                        "target": "expected_answer"
+                                    }
+                                ]
+                            },
+                            "adherance": {
+                                "weight": 0.3,
+                                "evaluators": [
+                                    {
+                                        "type": "min_word_count",
+                                        "limit": 0
+                                    },
+                                    {
+                                        "type": "max_word_count",
+                                        "limit": 2
+                                    }
+                                ]
+                            },
+                            "relevance": {
+                                "weight": 0.0,
+                                "evaluators": []
+                            }
+                        },
+                        "overall_score": 0.75,
+                        "status": "complete"
+                    }
+                },
+                {
+                    "prompt_id": "007",
+                    "input": "A child scoring ten goals in a football match.",
+                    "answer": "DEBUGGING, doesnt count: A child scoring ten goals in a football match.",
+                    "usage": {
+                        "total_tokens": null,
+                        "input_tokens": null,
+                        "output_tokens": null,
+                        "cached_tokens": null,
+                        "reasoning_tokens": null
+                    },
+                    "times": {
+                        "confirmation": 8.000006346264854e-07,
+                        "first_token": 1.8999999156221747e-06,
+                        "total": 2.7999994927085936e-06
+                    },
+                    "evaluation": {
+                        "expectance": null,
+                        "score_criterions": {
+                            "accuracy": {
+                                "weight": 0.7,
+                                "evaluators": [
+                                    {
+                                        "type": "exact_match",
+                                        "target": "expected_answer"
+                                    }
+                                ]
+                            },
+                            "adherance": {
+                                "weight": 0.3,
+                                "evaluators": [
+                                    {
+                                        "type": "min_word_count",
+                                        "limit": 0
+                                    },
+                                    {
+                                        "type": "max_word_count",
+                                        "limit": 2
+                                    }
+                                ]
+                            },
+                            "relevance": {
+                                "weight": 0.0,
+                                "evaluators": []
+                            }
+                        },
+                        "overall_score": 0.75,
+                        "status": "complete"
+                    }
+                },
+                {
+                    "prompt_id": "008",
+                    "input": "A lycanthrope locking himself in a cell during a full moon.",
+                    "answer": "DEBUGGING, doesnt count: A lycanthrope locking himself in a cell during a full moon.",
+                    "usage": {
+                        "total_tokens": null,
+                        "input_tokens": null,
+                        "output_tokens": null,
+                        "cached_tokens": null,
+                        "reasoning_tokens": null
+                    },
+                    "times": {
+                        "confirmation": 6.999998731771484e-07,
+                        "first_token": 1.5000005078036338e-06,
+                        "total": 2.0000006770715117e-06
+                    },
+                    "evaluation": {
+                        "expectance": null,
+                        "score_criterions": {
+                            "accuracy": {
+                                "weight": 0.7,
+                                "evaluators": [
+                                    {
+                                        "type": "exact_match",
+                                        "target": "expected_answer"
+                                    }
+                                ]
+                            },
+                            "adherance": {
+                                "weight": 0.3,
+                                "evaluators": [
+                                    {
+                                        "type": "min_word_count",
+                                        "limit": 0
+                                    },
+                                    {
+                                        "type": "max_word_count",
+                                        "limit": 2
+                                    }
+                                ]
+                            },
+                            "relevance": {
+                                "weight": 0.0,
+                                "evaluators": []
+                            }
+                        },
+                        "overall_score": 0.75,
+                        "status": "complete"
+                    }
+                },
+                {
+                    "prompt_id": "009",
+                    "input": "A construction worker carrying a 40 kilogram sand bag.",
+                    "answer": "DEBUGGING, doesnt count: A construction worker carrying a 40 kilogram sand bag.",
+                    "usage": {
+                        "total_tokens": null,
+                        "input_tokens": null,
+                        "output_tokens": null,
+                        "cached_tokens": null,
+                        "reasoning_tokens": null
+                    },
+                    "times": {
+                        "confirmation": 6.999998731771484e-07,
+                        "first_token": 1.3999997463542968e-06,
+                        "total": 1.8999999156221747e-06
+                    },
+                    "evaluation": {
+                        "expectance": null,
+                        "score_criterions": {
+                            "accuracy": {
+                                "weight": 0.7,
+                                "evaluators": [
+                                    {
+                                        "type": "exact_match",
+                                        "target": "expected_answer"
+                                    }
+                                ]
+                            },
+                            "adherance": {
+                                "weight": 0.3,
+                                "evaluators": [
+                                    {
+                                        "type": "min_word_count",
+                                        "limit": 0
+                                    },
+                                    {
+                                        "type": "max_word_count",
+                                        "limit": 2
+                                    }
+                                ]
+                            },
+                            "relevance": {
+                                "weight": 0.0,
+                                "evaluators": []
+                            }
+                        },
+                        "overall_score": 0.75,
+                        "status": "complete"
+                    }
+                }
+            ],
+            "contexts": {
+                "001": {
+                    "instructions": "You are an assistant. Answer accurately and concisely. Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "An elephant trampling a rhino."
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "DEBUGGING, doesnt count: An elephant trampling a rhino."
+                        }
+                    ]
+                },
+                "002": {
+                    "instructions": "You are an assistant. Answer accurately and concisely. Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "An assassin slicing a throat."
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "DEBUGGING, doesnt count: An assassin slicing a throat."
+                        }
+                    ]
+                },
+                "003": {
+                    "instructions": "You are an assistant. Answer accurately and concisely. Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "A governor convincing a mob."
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "DEBUGGING, doesnt count: A governor convincing a mob."
+                        }
+                    ]
+                },
+                "004": {
+                    "instructions": "You are an assistant. Answer accurately and concisely. Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "A King invading a rival kingdom."
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "DEBUGGING, doesnt count: A King invading a rival kingdom."
+                        }
+                    ]
+                },
+                "005": {
+                    "instructions": "You are an assistant. Answer accurately and concisely. Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "A scientist throwing a knife to test his strength."
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "DEBUGGING, doesnt count: A scientist throwing a knife to test his strength."
+                        }
+                    ]
+                },
+                "006": {
+                    "instructions": "You are an assistant. Answer accurately and concisely. Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "A giant monster running in fear of a venomous plant."
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "DEBUGGING, doesnt count: A giant monster running in fear of a venomous plant."
+                        }
+                    ]
+                },
+                "007": {
+                    "instructions": "You are an assistant. Answer accurately and concisely. Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "A child scoring ten goals in a football match."
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "DEBUGGING, doesnt count: A child scoring ten goals in a football match."
+                        }
+                    ]
+                },
+                "008": {
+                    "instructions": "You are an assistant. Answer accurately and concisely. Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "A lycanthrope locking himself in a cell during a full moon."
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "DEBUGGING, doesnt count: A lycanthrope locking himself in a cell during a full moon."
+                        }
+                    ]
+                },
+                "009": {
+                    "instructions": "You are an assistant. Answer accurately and concisely. Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "A construction worker carrying a 40 kilogram sand bag."
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "DEBUGGING, doesnt count: A construction worker carrying a 40 kilogram sand bag."
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "summary": {}
+}

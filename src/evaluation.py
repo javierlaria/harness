@@ -27,12 +27,12 @@ def wrap(text: str, wrapper: dict):
 
 def exact_match(response: str, expected: str, wrapper: dict) -> bool:
     if wrapper:
-        expected = wrap(expected)
+        expected = wrap(expected, wrapper)
     return response.strip().lower() == expected.strip().lower()
 
 def normalized_matching(response: str, expected: str, wrapper: dict) -> float:
     if wrapper:
-        expected = wrap(expected)
+        expected = wrap(expected, wrapper)
     return float(normalize(response) == normalize(expected))
 
 def keywords(response: str, keywords: list[str]) -> bool:
@@ -47,25 +47,28 @@ def min_word_count(response: str, limit: int) -> bool:
 def pattern_recognition(response: str, pattern: str) -> bool:
     return bool(re.search(pattern, response))
 
-def evaluate_response(prompt: dict, response: str, baseline: dict | None = None) -> dict: 
+def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dict: 
+    if baseline == None:
+        print("Evaluation: evaluate_response: No baseline")
+        return None
     expected_answer = prompt.get("expected", None)
     wrapper = baseline.get("wrapper", None)
     score_criterions = baseline.get("criterions", None)
     result = {
         "expectance" : None,
-        "score_criterions" : score_criterions or {},
+        "evaluations" : None,
         "overall_score" : None,
         "status" : "pending"
     }
 
-    if expected_answer is not None and baseline.get("expected_asnwers", False):
+    if expected_answer is not None and baseline.get("expected_answers", False):
         result["expectance"] = normalized_matching(response, expected_answer, wrapper)
 
     if score_criterions: 
 
         total_score = 0
         total_weight = 0
-
+        print("")
         for name, criterion in score_criterions.items():
             print(f" - Testing {name}.")
             evaluations = []
@@ -77,9 +80,11 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None = None)
                 evaluations.append(evaluation)
 
             if len(evaluations) == 0:
-                print("\nNo evaluators assigned.")
+                print("No evaluators assigned.")
                 continue
 
+            result["evaluations"] = evaluations
+            
             criterion_score = sum(evaluation.get("score", 0.0) for evaluation in evaluations) / len(evaluations)
             print(f"Score: {criterion_score}\n")
             
@@ -96,15 +101,15 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None = None)
 
     return result
 
-def run_evaluation(evaluator: str, response: str, expected_answer: str, wrapper) -> dict:
+def run_evaluation(evaluator: str, response: str, expected_answer: str, wrapper: dict) -> dict:
     evaluator_type = evaluator["type"]
 
     match evaluator_type:
         case "exact_match":
             target = (expected_answer if evaluator["target"] == "expected_answer" else evaluator["target"])
             if wrapper:
-                target = wrap(target)
-            result = exact_match(response, target)
+                target = wrap(target, wrapper)
+            result = exact_match(response, target, wrapper)
 
         case "keywords":
             result = keywords(response, evaluator["keywords"])

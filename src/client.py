@@ -15,7 +15,7 @@ def create_client(provider: str) -> OpenAI:
             raise ValueError(f"Client: Wrong provider, not set: ", provider)
 
 
-def handle_request(user_input: str, context: ctx.Context, client: OpenAI, model: str, print_answer: bool = True):
+def handle_request(user_input: str, context: ctx.Context, client: OpenAI | None, model: str, print_answer: bool = True):
     context.add_message("user", user_input)
 
     start_time = time.perf_counter()
@@ -23,40 +23,53 @@ def handle_request(user_input: str, context: ctx.Context, client: OpenAI, model:
     first_response_time = None
     first_token_time = None
 
-    response = client.responses.create(model = model, instructions= context.instructions, input = context.to_input(), stream= True)
 
     complete_answer = ""
     end_message = None
 
     if print_answer:
         print("\n")
-    for event in response:
-        match event.type:
 
-            case "response.created":
-                first_response_time = time.perf_counter()
+    if model == "debug":
+        first_response_time = time.perf_counter()
+        complete_answer = f"DEBUGGING, doesnt count: {user_input}"
+        first_token_time = time.perf_counter()
 
-            case "response.output_text.delta":
-                if first_token_time is None:
-                    first_token_time = time.perf_counter()
+        if print_answer:
+            print("\n")
+            print(complete_answer, end="", flush=True)
 
-                complete_answer += event.delta
-                if print_answer:
-                    print(event.delta, end="", flush= True)
+        end_time = time.perf_counter()
 
-            case "response.completed":
-                end_message = event.response
+        end_message = None
+    
+    else: 
+        response = client.responses.create(model = model, instructions= context.instructions, input = context.to_input(), stream= True)
 
-            case "response.failed":
-                raise RuntimeError("Client:  ", {event.response.error})
-            
-            case "error":
-                raise RuntimeError("Client:  Stream error: ", {event.message})
+        for event in response:
+            match event.type:
+
+                case "response.created":
+                    first_response_time = time.perf_counter()
+
+                case "response.output_text.delta":
+                    if first_token_time is None:
+                        first_token_time = time.perf_counter()
+
+                    complete_answer += event.delta
+                    if print_answer:
+                        print(event.delta, end="", flush= True)
+
+                case "response.completed":
+                    end_message = event.response
+
+                case "response.failed":
+                    raise RuntimeError("Client:  ", {event.response.error})
+
+                case "error":
+                    raise RuntimeError("Client:  Stream error: ", {event.message})
             
     end_time = time.perf_counter()
-
-    if end_message is None:
-        raise RuntimeError("Client: Response did not complete successfully.")
 
     context.add_message("assistant", complete_answer)
 

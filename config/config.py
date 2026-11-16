@@ -26,14 +26,19 @@ import src.client as client
 
 def model_selection(provider, _model= None):
     model_list = [model.strip() for model in os.getenv("OPENROUTER_MODELS", "").split(",") if model.strip()]
-
     if not model_list:
         raise ValueError(f"Config: No models in list for provider {provider})")
 
     if _model is not None:
+        if _model == "debug":
+            selected_model = _model
+            print("Provider: ", provider)
+            print("Client: ", None)
+            print("Model: ", selected_model)
+
+            return None, selected_model
         if _model not in model_list:
             raise ValueError(f"Config: Model not in configuration : {_model}")
-        selected_model = _model
 
     else:
         for i, model in enumerate(model_list):

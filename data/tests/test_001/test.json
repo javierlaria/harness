@@ -4,14 +4,13 @@
     "description" : "Evaluate how the model follows basic classification instructions for relatively subjective descriptions.",
     "baseline" : {
         "expected_answers" : true,
-        "rubric" : true,
         "wrapper" : {
             "in" : "<answer>",
             "out" : "</answer>"
         },
         "criterions" : {
             "accuracy" : {
-                "weight" : 0.5,
+                "weight" : 0.7,
                 "evaluators" : [
                     {
                         "type" : "exact_match",
@@ -35,7 +34,7 @@
             },
 
             "relevance" : {
-                "weight" : 0.2,
+                "weight" : 0.0,
                 "evaluators" : [
                 ]
             }

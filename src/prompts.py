@@ -42,6 +42,9 @@ def load_experiment(test_id: str, technique_id: str) -> dict:
 
     technique = load_json(path / "techniques" / f"{technique_id}.json")
 
+    print(f"Technique path: {path / "test.json"}")
+    print(f"Technique path: {path / "techniques" / f"{technique_id}.json"}")
+
     return {
         "test" : test,
         "technique" : technique
