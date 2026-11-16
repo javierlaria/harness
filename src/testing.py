@@ -63,10 +63,9 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save
     baseline = test.get("baseline", None)
     if baseline:
         wrapper = baseline.get("wrapper", None)
-        print("wrapper: ", wrapper)
         if wrapper:
             base_context.build_wrapper(wrapper)
-    print("Instructions: ", base_context.instructions)
+    print("\nInstructions: ", base_context.instructions)
     
     prompts = technique["prompts"]
 

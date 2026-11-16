@@ -35,6 +35,7 @@ def select_item(items: list, label: str, set_selection: int = None) -> dict:
             selection = int(input(f"Select {label}: "))
 
             if 1 <= selection <= len(items):
+                print(items[selection - 1].get("name", item.get("test_id")))
                 return items[selection - 1]
         except ValueError:
             pass
@@ -136,7 +137,7 @@ def debug_testing(client = None, model = "debug", save: bool = False, set_select
     if not save: # just in case
             save_check = input("\nSave? (yes or no): ").lower().strip()
             match save_check:
-                case "yes" | "y" |"1":
+                case "yes" | "y" | "1":
                     save = True
                 case _:
                     save = False

@@ -40,7 +40,7 @@
         },
         {
             "id" : "006",
-            "input" : "A giant monster running in fear of a venomous plant.",
+            "input" : "A giant monster running to avoid a venomous plant.",
             "expected" : "Intelligence"
         },
         {

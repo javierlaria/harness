@@ -1,5 +1,5 @@
 {
-    "technique_id" : "0_shot",
+    "technique_id" : "zero_shot_testing",
     "name" : "Zero-shot-testing",
 
     "context" : {
