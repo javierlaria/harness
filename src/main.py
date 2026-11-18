@@ -41,7 +41,7 @@ def select_item(items: list, label: str, set_selection: int = None) -> dict:
             pass
         print(f"Select a correct {label}.")
 
-def chatting(client, model, save: bool = False):
+def chatting(client, model):
     # Im leaving chatting without any evaluations or other stuff, because thats more for testing.
     context = ctx.create_context(_instructions = "You are an assistant to a test chat. Keep all your answers short.")
     print("\nChatting. Type exit to stop")
@@ -63,16 +63,6 @@ def chatting(client, model, save: bool = False):
         print("\n")
         print(f"                                                               Total tokens:    {response.usage.total_tokens}")
         print(f"                                                               Total duration:  {times["total"]:.6f}")
-
-    if not save: # just in case
-        match input("\nSave? (yes or no): ").lower().strip():
-            case "yes" | "y" | "1":
-                save = True
-            case _:
-                save = False
-    if save:
-        save_name = str(input("\nChat filename (name.json): "))
-        context.save_to("/".join(os.getenv("CONTEXTS_FILEPATH"), save_name + ".json"))
 
 def testing(client, model, save: bool = False):
 
@@ -153,6 +143,15 @@ def debug_testing(client = None, model = "debug", save: bool = False, set_select
     print("Summary: ", result["summary"])
 
 def main(): 
+    usage = cfg.get_usage()
+    print("")
+    print(f"                                                                                 Used:      {usage["used"]}")
+    print(f"                                                                                 Limit:     {usage["limit"]}")
+    print(f"                                                                                 Remaining: {usage["remaining"]}")
+
+    if usage["remaining"] < 9: # number of prompts in a test
+        print(f"                                                                                 Not enough for a test")
+
     print("\nSelect chat or test mode")
     print("1: Chatting")
     print("2: Testing")

@@ -138,38 +138,6 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save
                     "messages" : current_context.messages
                 }
 
-            case "combined": # still working this one out, the idea is that you keep passing the prompt input and response, but not sure how to evaluate it
-                combined_input = "\n\n".join(
-                    (str(prompt.get("id", "noid")) +"\n"+ str(prompt.get("input", "emptyinput"))) 
-                    for prompt in prompts)
-
-                complete_answer, response, times = cl.handle_request(
-                    user_input= combined_input,
-                    context= current_context,
-                    client= client,
-                    model= model,
-                    print_answer= False
-                )
-
-                # evaluation = ev.evaluate_response(prompt, complete_answer) dont evaluate
-
-                responses.append({
-                    "prompt_ids" : [prompt.get("id", "no id") for prompt in prompts],
-                    "input" : combined_input,
-                    "answer" : complete_answer,
-                    "usage" : extract_usage(response),
-                    "times" : times,
-                    "evaluation" : {
-                        "status" : "pending",
-                        "overall_score": None
-                    }
-                })
-
-                saved_contexts["combined"] = {
-                    "instructions" : saved_contexts.instructions,
-                    "messages" : saved_contexts.messages
-                }
-
             case _:
                 raise ValueError("Testing: Unknown strategy")
 
@@ -272,7 +240,7 @@ def save_result(result: dict) -> pathlib.Path:
 
     dir.mkdir(parents= True, exist_ok = True)
 
-    filepath = dir / f"{result["run_id"]}.json"
+    filepath = dir / f"{safe_model_id}_{technique_id}_{test_id}.json"
 
     with filepath.open("w", encoding= "utf-8") as file:
         json.dump(result, file, indent= 4, ensure_ascii= False)

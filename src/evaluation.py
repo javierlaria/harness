@@ -62,7 +62,7 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
     }
 
     if expected_answer is not None and baseline.get("expected_answers", False):
-        result["expected_match"] = normalized_matching(response, expected_answer, wrapper)
+        result["expectance"] = normalized_matching(response, expected_answer, wrapper)
 
     if score_criterions: 
 

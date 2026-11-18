@@ -1,5 +1,6 @@
 import os
 import src.client as client
+import requests
 
 ##### Things to put here
 # Api configuration (OpernRouter, base url)
@@ -62,3 +63,21 @@ def model_selection(provider, _model= None):
     return api_client, selected_model
 
 
+def get_usage():
+    response = requests.get(
+        "https://openrouter.ai/api/v1/key", 
+        headers={"Authorization": f"Bearer {os.getenv("OPENROUTER_API_KEY")}"}, 
+        timeout= 10
+    )
+
+    response.raise_for_status()
+
+    data = response.json()["data"]
+
+    daily_quota = data.get("free_model_daily_requests", {})
+
+    return {
+        "used": daily_quota.get("used"),
+        "limit": daily_quota.get("limit"),
+        "remaining": daily_quota.get("remaining")
+    }
