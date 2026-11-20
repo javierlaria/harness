@@ -48,6 +48,8 @@ def valid_json(response: str, wrapper: dict) -> bool:
 
 def required_json_keys(response: str, keys: list, wrapper: dict) -> tuple[bool, float]:
     extracted = extract_wrapped_content(response, wrapper)
+    if not keys:
+        raise ValueError
     try:
         loaded_json = json.loads(extracted)
         if isinstance(loaded_json, dict):
@@ -57,11 +59,13 @@ def required_json_keys(response: str, keys: list, wrapper: dict) -> tuple[bool, 
                 if key in loaded_json:
                     score += weight
             return True, score
-    except (json.JSONDecodeError, TypeError):
+    except (json.JSONDecodeError, TypeError, ValueError):
         return False, 0.0
 
 def proper_values(response: str, values: dict, wrapper: dict) -> tuple[bool, float]:
     extracted = extract_wrapped_content(response, wrapper)
+    if not values:
+        raise ValueError
     try:
         loaded_json = json.loads(extracted)
         if isinstance(loaded_json, dict):
@@ -71,14 +75,14 @@ def proper_values(response: str, values: dict, wrapper: dict) -> tuple[bool, flo
                 if loaded_json.get(key) == value:
                     score += weight
             return True, score
-    except (json.JSONDecodeError, TypeError):
+    except (json.JSONDecodeError, TypeError, ValueError):
         return False, 0.0
 
 def max_json_size(response: str, limit: int, wrapper: dict) -> bool:
     extracted = extract_wrapped_content(response, wrapper)
     if extracted is None:
         return False
-    return len(json.dumps(extracted, ensure_ascii=False)) <= limit
+    return len(extracted) <= limit
 
 def syntax_check(response: str, wrapper: dict) -> bool:
     code = extract_wrapped_content(response, wrapper)
@@ -117,8 +121,7 @@ def required_loops(response: str, loops: dict, wrapper: dict) -> tuple[bool, flo
                 found["for"] += 1
             elif isinstance(node, ast.While):
                 found["while"] += 1
-        diff = (found["for"] - loops["for"], found["while"] - loops["while"])
-        if diff <= (0.0, 0.0):
+        if (found["for"] <= loops["for"] and found["while"] <= loops["while"]):
             return True, 1.0
         return True, 0.0
     except SyntaxError:
@@ -223,7 +226,7 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
             print(f"Overall score: {result["overall_score"]}")
         else:
             result["status"] = "No evaluators"
-            
+
     return result
 
 def run_evaluation(evaluator: dict, response: str, prompt: dict, expected_answer: str, wrapper: dict) -> dict:
