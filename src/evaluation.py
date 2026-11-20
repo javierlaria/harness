@@ -110,9 +110,9 @@ def required_funcs(response: str, func_names: list, wrapper: dict) -> tuple[bool
 
 def required_loops(response: str, loops: dict, wrapper: dict) -> tuple[bool, float]:
     code = extract_wrapped_content(response, wrapper)
-    if not loops:
-        raise ValueError
     try:
+        if not loops:
+            raise ValueError(f"Evaluation: No loops to compare on.")
         parsed_code = ast.parse(code)
         found = {
             "for" : 0,
@@ -187,7 +187,7 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
         "expectance" : None,
         "evaluations" : {},
         "overall_score" : None,
-        "status" : "pending"
+        "status" : "Pending"
     }
 
     if expected_answer is not None and baseline.get("expected_answers", False):
@@ -268,7 +268,7 @@ def run_evaluation(evaluator: dict, response: str, prompt: dict, expected_answer
             result = syntax_check(response, wrapper)
 
         case "required_funcs":
-            result = required_funcs(response, evaluator["func_names"], wrapper)
+            result = required_funcs(response, prompt.get("evaluation", {}).get("target_func", ""), wrapper)
 
         case "required_loops":
             loops = prompt.get("evaluation", {}).get("loops", None)

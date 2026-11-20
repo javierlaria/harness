@@ -44,7 +44,13 @@ def handle_request(user_input: str, context: ctx.Context, client: OpenAI | None,
         end_message = None
     
     else: 
-        response = client.responses.create(model = model, instructions= context.instructions, input = context.to_input(), stream= True)
+        response = client.responses.create(
+            model = model, 
+            instructions= context.instructions, 
+            input = context.to_input(), 
+            temperature = 0.0,
+            top_p = 1.0,
+            stream= True)
 
         for event in response:
             match event.type:

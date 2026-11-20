@@ -1,6 +1,6 @@
 {
-    "technique_id" : "zero_shot",
-    "name" : "Zero-shot",
+    "technique_id" : "self_refinement",
+    "name" : "Self-refinement",
 
     "context" : {
         "instructions": "You are an assistant. You write simple and concise python code.",

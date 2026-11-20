@@ -25,7 +25,7 @@ def list_tests() -> list[dict]:
     return tests
 
 def list_techniques(test_id: str) -> list[dict]:
-    path = pathlib.Path(os.getenv("TESTS_FILEPATH")) /  test_id / "techniques"
+    path = pathlib.Path(os.getenv("TESTS_FILEPATH")) / test_id / "techniques"
 
     techniques = []
 

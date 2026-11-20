@@ -22,7 +22,7 @@ def select_item(items: list, label: str, set_selection: int = None) -> dict:
     print("")
     for i, item in enumerate(items):
         print(f"{i+1} : {item.get("name", item.get("test_id"))}")
-    if set_selection is not None:
+    if set_selection:
         try:
             selection = set_selection
             if 1 <= selection <= len(items):
@@ -32,11 +32,12 @@ def select_item(items: list, label: str, set_selection: int = None) -> dict:
             print(f"Select a correct {label}.")
     while True:
         try:
-            selection = int(input(f"Select {label}: "))
-
-            if 1 <= selection <= len(items):
-                print(items[selection - 1].get("name", item.get("test_id")))
-                return items[selection - 1]
+            selection = input(f"Select {label}: ")
+            if selection.lower() in ("exit", "close", "quit", "salir", "q"):
+                raise KeyboardInterrupt
+            if 1 <= int(selection) <= len(items):
+                print(items[int(selection) - 1].get("name", item.get("test_id")))
+                return items[int(selection) - 1]
         except ValueError:
             pass
         print(f"Select a correct {label}.")
@@ -50,7 +51,7 @@ def chatting(client, model):
         user_input = input("\nPrompt:  ")
 
         if user_input.lower() in ("exit", "close", "quit", "salir", "q"):
-            break
+            raise KeyboardInterrupt
         
         complete_answer, response, times = cl.handle_request(
             user_input = user_input,
@@ -109,11 +110,11 @@ def testing(client, model, save: bool = False):
 
 def debug_testing(client = None, model = "debug", save: bool = False, set_selection: int = 1):
     tests = l.list_tests()
-    selected_test = select_item(tests, "test", set_selection)
+    selected_test = select_item(tests, "test")
     test_id = selected_test["test_id"]
 
     techniques = l.list_techniques(test_id)
-    selected_technique = select_item(techniques, "technique", set_selection)
+    selected_technique = select_item(techniques, "technique")
     technique_id = selected_technique["technique_id"]
 
     if test_id is None or technique_id is None:
@@ -160,7 +161,7 @@ def main():
     mode = input("Mode: ").strip().lower()
     if mode not in ("1", "2", "3"):
         print("Invalid mode.")
-        return
+        raise KeyboardInterrupt
     provider = os.getenv("PROVIDER", "openrouter")
     client, model = cfg.model_selection(provider= provider, _model = "debug" if mode == "3" else None)
     try:
@@ -176,9 +177,11 @@ def main():
                 debug_testing(client, model, set_selection=1)
 
     except OpenAIError as error:
-        print("\nMain: API request failed: ", {error})
+        print(f"\nMain: API request failed: {error}")
     except (KeyError, ValueError, AttributeError) as error:
-        print("\nMain: Execution failed:", {error})
+        print(f"\nMain: Execution failed: {error}")
+    except (KeyboardInterrupt):
+        print("\nMain: Quit.")
 
 
 if __name__ == "__main__":

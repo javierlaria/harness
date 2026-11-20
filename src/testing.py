@@ -143,6 +143,7 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save
             "repetition" : repetition,
             "prompts" : results
         })
+    
 
     result = build_result(
         test= test,
@@ -158,6 +159,7 @@ def run_test(complete_test: dict, client, model: str, repetitions: int = 1, save
     return result
 
 def build_result(test: dict, technique: dict, model: str, repetitions: int, runs: list) -> dict:
+    print(f"reached, {model}")
     if model == "debug":
         return {
                 "run_id": str(uuid.uuid4()),
@@ -220,18 +222,19 @@ def build_result(test: dict, technique: dict, model: str, repetitions: int, runs
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "test" : test,
         "technique" : technique,
-        "model" : {
-            "model_id" : model
-        },
+        "model_id" : model,
         "repetitions" : repetitions,
         "runs" : runs,
         "summary" : summary
     }
 
 def save_result(result: dict) -> pathlib.Path:
-    test_id = result["test"]["test_id"]
-    technique_id = result["technique"]["technique_id"]
-    model_id = result["model"]["model_id"]
+    try: 
+        test_id = result["test"]["test_id"]
+        technique_id = result["technique"]["technique_id"]
+        model_id = result["model_id"]
+    except KeyError:
+        print(f"Testing: Save_result: check the dictionaries.")
     safe_model_id = model_id.replace("/", "_").replace(":", "_").replace("-", "_")
     dir = (
         pathlib.Path(os.getenv("RESULTS_FILEPATH")) / test_id / technique_id / safe_model_id
