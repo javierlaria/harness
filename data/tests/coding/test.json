@@ -1,0 +1,54 @@
+{
+    "test_id" : "code",
+    "name" : "Python code generation",
+    "description" : "Evaluate the model's ability to write basic python code that compiles.",
+    "baseline" : {
+        "expected_answers" : false,
+        "wrapper" : {
+            "in" : "<answer>",
+            "out" : "</answer>"
+        },
+        "criterions" : {
+            "validity" : {
+                "weight" : 0.3,
+                "evaluators" : [
+                    {
+                        "type" : "syntax check"
+                    }
+                ]
+            },
+
+            "structure" : {
+                "weight" : 0.2,
+                "evaluators" : [
+                    {
+                        "type" : "required_funcs",
+                        "func_names" : []
+                    },
+                    {
+                        "type" : "required_loops",
+                        "loops" : []
+                    }
+                ]
+            },
+
+            "functionality" : {
+                "weight" : 0.4,
+                "evaluators" : [
+                    {
+                        "type" : "execute_response_code"
+                    }
+                ]
+            },
+
+            "adherence" : {
+                "weight" : 0.1,
+                "evaluators" : [
+                    {
+                        "type" : "wrapper"
+                    }
+                ] 
+            }
+        }
+    }
+}

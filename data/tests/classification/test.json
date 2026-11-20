@@ -1,0 +1,33 @@
+{
+    "test_id" : "classify",
+    "name" : "Classify attributes",
+    "description" : "Evaluate how the model follows basic classification instructions for relatively subjective descriptions.",
+    "baseline" : {
+        "expected_answers" : true,
+        "wrapper" : {
+            "in" : "<answer>",
+            "out" : "</answer>"
+        },
+        "criterions" : {
+            "accuracy" : {
+                "weight" : 0.85,
+                "evaluators" : [
+                    {
+                        "type" : "exact_match",
+                        "target" : "expected_answer"
+                    }
+                ]
+            },
+
+            "adherence" : {
+                "weight" : 0.15,
+                "evaluators" : [
+                    {
+                        "type" : "max_word_count",
+                        "limit" : 1
+                    }
+                ]
+            }
+        }
+    }
+}

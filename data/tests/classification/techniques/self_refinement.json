@@ -1,0 +1,63 @@
+{
+    "technique_id" : "self_refinement",
+    "name" : "Self-refinement",
+
+    "context" : {
+        "instructions": "You are an assistant. Solve the task at hand.",
+        "problem": "Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes.",
+        "initial_messages" : [],
+        "sequential prompt" : "Review your answer:\n- Is it correct?\n- Does it satisfy the format?"
+    },
+
+    "execution" : {
+        "strategy" : "independent"
+    },
+
+    "prompts" : [
+        {
+            "id" : "001",
+            "input" : "An elephant trampling a rhino.",
+            "expected" : "Strength"
+        },
+        {
+            "id" : "002",
+            "input" : "An assassin slicing a throat.",
+            "expected" : "Dexterity"
+        },
+        {
+            "id" : "003",
+            "input" : "A governor convincing a mob.",
+            "expected" : "Intelligence"
+        },
+        {
+            "id" : "004",
+            "input" : "A King invading a rival kingdom.",
+            "expected" : "Strength"
+        },
+        {
+            "id" : "005",
+            "input" : "A scientist throwing a knife to test his strength.",
+            "expected" : "Intelligence"
+        },
+        {
+            "id" : "006",
+            "input" : "A giant monster running to avoid a venomous plant.",
+            "expected" : "Intelligence"
+        },
+        {
+            "id" : "007",
+            "input" : "A child scoring ten goals in a football match.",
+            "expected" : "Dexterity"
+        },
+        {
+            "id" : "008",
+            "input" : "A lycanthrope locking himself in a cell during a full moon.",
+            "expected" : "Intelligence"
+        },
+        {
+            "id" : "009",
+            "input" : "A construction worker carrying a 40 kilogram sand bag.",
+            "expected" : "Strength"
+        }
+    ]
+}

@@ -1,0 +1,62 @@
+{
+    "technique_id" : "chain_of_thought",
+    "name" : "Chain-of-thought",
+
+    "context" : {
+        "instructions": "You are an assistant.\n\nFirst: Identify the main action or purpose described.\nSecond: Consider why and action is performed. \nThird: Recognize the objective of the action. \nFinally: Answer with the most appropiate attribute.",
+        "problem": "\nClassify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes.",
+        "initial_messages" : []
+    },
+
+    "execution" : {
+        "strategy" : "independent"
+    },
+
+    "prompts" : [
+        {
+            "id" : "001",
+            "input" : "An elephant trampling a rhino.",
+            "expected" : "Strength"
+        },
+        {
+            "id" : "002",
+            "input" : "An assassin slicing a throat.",
+            "expected" : "Dexterity"
+        },
+        {
+            "id" : "003",
+            "input" : "A governor convincing a mob.",
+            "expected" : "Intelligence"
+        },
+        {
+            "id" : "004",
+            "input" : "A King invading a rival kingdom.",
+            "expected" : "Strength"
+        },
+        {
+            "id" : "005",
+            "input" : "A scientist throwing a knife to test his strength.",
+            "expected" : "Intelligence"
+        },
+        {
+            "id" : "006",
+            "input" : "A giant monster running to avoid a venomous plant.",
+            "expected" : "Intelligence"
+        },
+        {
+            "id" : "007",
+            "input" : "A child scoring ten goals in a football match.",
+            "expected" : "Dexterity"
+        },
+        {
+            "id" : "008",
+            "input" : "A lycanthrope locking himself in a cell during a full moon.",
+            "expected" : "Intelligence"
+        },
+        {
+            "id" : "009",
+            "input" : "A construction worker carrying a 40 kilogram sand bag.",
+            "expected" : "Strength"
+        }
+    ]
+}

@@ -2,14 +2,7 @@ import pathlib
 import json
 import copy
 
-###### Things to put here
-# context preparation (construction)
-# retrieval (selection, recheck, loop?)
-# formatting? (filtering, truncation and metadata)
-
-
 class Context():
-    # Wrapper for the context is better than a list
     def __init__(self, instructions: str = "", messages: list[dict] = None) -> None:
         self.instructions = instructions
         self.messages = messages if messages is not None else []

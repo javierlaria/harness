@@ -1,5 +1,7 @@
 
 import re
+import json
+import ast # apparently used to parse python code into readable abstract trees.
 
 #### Things to put here
 
@@ -19,8 +21,125 @@ import re
 # confusion matrix?
 # experiment summaries
 
+#### New evaluators to think about:
+# classification -> match (bool), f1 (bool), precision (aggregate), recall (aggregate), keywords (bool), wrapper (bool), max_word_count (bool)
+# info_extract -> json_valid (bool), exact_match (bool), required_keys (aggregate), field_match (aggregate), max_size (bool)
+# coding -> code_output_match (bool), syntax_check (bool), required_funcs (aggregate), pattern (bool)
+
 def normalize(text: str) -> str:
     return " ".join(text.lower().strip().split())
+
+def extract_wrapped_content(response: str, wrapper: dict) -> str:
+    if not wrapper:
+        return response.strip()
+
+    if response.strip().startswith(wrapper["in"]) and response.strip().endswith(wrapper["out"]):
+        return response.strip()[len(wrapper["in"]):-len(wrapper["out"])].strip()
+
+    return response.strip()
+
+def valid_json(response: str, wrapper: dict) -> bool:
+    extracted = extract_wrapped_content(response, wrapper)
+    try:
+        json.loads(extracted)
+        return True
+    except (json.JSONDecodeError, TypeError):
+        return False
+
+def required_json_keys(response: str, keys: list, wrapper: dict) -> tuple[bool, float]:
+    extracted = extract_wrapped_content(response, wrapper)
+    try:
+        loaded_json = json.loads(extracted)
+        if isinstance(loaded_json, dict):
+            score = 0.0
+            weight = 1.0 / len(keys)
+            for key in keys:
+                if key in loaded_json:
+                    score += weight
+            return True, score
+    except (json.JSONDecodeError, TypeError):
+        return False, 0.0
+
+def proper_values(response: str, values: dict, wrapper: dict) -> tuple[bool, float]:
+    extracted = extract_wrapped_content(response, wrapper)
+    try:
+        loaded_json = json.loads(extracted)
+        if isinstance(loaded_json, dict):
+            score = 0.0
+            weight = 1.0 / len(values)
+            for key, value in values.items():
+                if loaded_json.get(key) == value:
+                    score += weight
+            return True, score
+    except (json.JSONDecodeError, TypeError):
+        return False, 0.0
+
+def max_json_size(response: str, limit: int, wrapper: dict) -> bool:
+    extracted = extract_wrapped_content(response, wrapper)
+    if extracted is None:
+        return False
+    return len(json.dumps(extracted, ensure_ascii=False)) <= limit
+
+def syntax_check(response: str, wrapper: dict) -> bool:
+    code = extract_wrapped_content(response, wrapper)
+    try:
+        ast.parse(code)
+        return True
+    except SyntaxError:
+        return False
+
+def required_funcs(response: str, func_names: list, wrapper: dict) -> tuple[bool, float]:
+    code = extract_wrapped_content(response, wrapper)
+    if not func_names:
+        return True, 1.0
+    try:
+        parsed_code = ast.parse(code)
+        score = 0.0
+        weight = 1.0 / len(func_names) if func_names else 1.0
+        funcs = {node.name for node in ast.walk(parsed_code) if isinstance(node, ast.FunctionDef)}
+        for func in funcs:
+            if func in func_names:
+                score += weight
+        return True, score
+    except SyntaxError:
+        return False, 0.0
+
+def required_loops(response: str, loops: dict, wrapper: dict) -> tuple[bool, float]:
+    code = extract_wrapped_content(response, wrapper)
+    try:
+        parsed_code = ast.parse(code)
+        found = {
+            "for" : 0,
+            "while" : 0
+        }
+        for node in ast.walk(parsed_code):
+            if isinstance(node, ast.For):
+                found["for"] += 1
+            elif isinstance(node, ast.While):
+                found["while"] += 1
+        diff = (found["for"] - loops["for"], found["while"] - loops["while"])
+        if diff <= (0.0, 0.0):
+            return True, 1.0
+        return True, 0.0
+    except SyntaxError:
+        return False, 0.0
+
+def execute_response_code(response: str, wrapper: dict, target_name: str, args: tuple, expected_output) -> bool:
+    code = extract_wrapped_content(response, wrapper)
+    try:
+        parsed_code = ast.parse(code)
+        code_object = compile(parsed_code, file_name = "try_code", mode= "exec")
+        namespace = {}
+        exec(code_object, namespace)
+
+        func_to_run = namespace.get(target_name)
+        if callable(func_to_run):
+            result = func_to_run(*args)
+            return result == expected_output
+
+        return False
+    except SyntaxError:
+        return False
 
 def wrap(text: str, wrapper: dict):
     return "".join([wrapper["in"], text, wrapper["out"]])
@@ -50,7 +169,12 @@ def pattern_recognition(response: str, pattern: str) -> bool:
 def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dict: 
     if baseline == None:
         print("Evaluation: evaluate_response: No baseline")
-        return None
+        return {
+                "expectance" : None,
+                "evaluations" : {},
+                "overall_score" : None,
+                "status" : "No baseline to evaluate"
+            }
     expected_answer = prompt.get("expected", None)
     wrapper = baseline.get("wrapper", None)
     score_criterions = baseline.get("criterions", None)
@@ -122,11 +246,29 @@ def run_evaluation(evaluator: str, response: str, expected_answer: str, wrapper:
         case "pattern":
             result = pattern_recognition(response, evaluator["pattern"])
 
+        case "json_valid":
+            result = valid_json(response, wrapper)
+
+        case "required_json_keys":
+            result = required_json_keys(response, evaluator["keys"], wrapper)
+
+        case "proper_values":
+            result = proper_values(response, evaluator["values"], wrapper)
+
+        case "syntax_check":
+            result = syntax_check(response, wrapper)
+
+        case "required_funcs":
+            result = required_funcs(response, evaluator["func_names"], wrapper)
+
+        case "required_loops":
+            result = required_loops(response, evaluator["loops"], wrapper)
+        
         case _:
             raise ValueError("Evaluation: run_evaluation: Unknown evaluator type ", evaluator_type)
 
     return {
         "type" : evaluator_type,
-        "result" : result,
-        "score" : 5 if result else 0
+        "result_valid" : result if isinstance(result, bool) else result[0],
+        "score" : result[1] if isinstance(result, tuple) else 1.0 if result else 0.0
     }

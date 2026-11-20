@@ -1,0 +1,52 @@
+{
+    "test_id" : "info_extract",
+    "name" : "Extract information from the prompt",
+    "description" : "Extract relevant information given a prompt, and format it into a json output.",
+    "baseline" : {
+        "expected_answers" : false,
+        "wrapper" : {
+            "in" : "<answer>",
+            "out" : "</answer>"
+        },
+        "criterions" : {
+
+            "accuracy" : {
+                "weight" : 0.5,
+                "evaluators" : [
+                    {
+                        "type" : "proper_values",
+                        "values" : []
+                    },
+                    {
+                        "type" : "exact_match",
+                        "expected" : "expected_answer"
+                    
+                    }
+                ]
+            },
+
+            "validity" : {
+                "weight" : 0.2,
+                "evaluators" : [
+                    {
+                        "type" : "valid_json"
+                    },
+                    {
+                        "type" : "max_json_size",
+                        "limit" : 300
+                    }
+                ]
+            },
+
+            "completeness" : {
+                "weight" : 0.4,
+                "evaluators" : [
+                    {
+                        "type" : "required_json_keys",
+                        "keys": []
+                    }
+                ]
+            }
+        }
+    }
+}
