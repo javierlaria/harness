@@ -110,6 +110,8 @@ def required_funcs(response: str, func_names: list, wrapper: dict) -> tuple[bool
 
 def required_loops(response: str, loops: dict, wrapper: dict) -> tuple[bool, float]:
     code = extract_wrapped_content(response, wrapper)
+    if not loops:
+        raise ValueError
     try:
         parsed_code = ast.parse(code)
         found = {
@@ -124,7 +126,7 @@ def required_loops(response: str, loops: dict, wrapper: dict) -> tuple[bool, flo
         if (found["for"] <= loops["for"] and found["while"] <= loops["while"]):
             return True, 1.0
         return True, 0.0
-    except SyntaxError:
+    except (SyntaxError, ValueError):
         return False, 0.0
 
 def execute_response_code(response: str, wrapper: dict, target_name: str, args, expected_output) -> bool:
@@ -269,7 +271,8 @@ def run_evaluation(evaluator: dict, response: str, prompt: dict, expected_answer
             result = required_funcs(response, evaluator["func_names"], wrapper)
 
         case "required_loops":
-            result = required_loops(response, evaluator["loops"], wrapper)
+            loops = prompt.get("evaluation", {}).get("loops", None)
+            result = required_loops(response, loops, wrapper)
 
         case "execute_response_code":
             prompt_evaluation = prompt.get("evaluation", {})
