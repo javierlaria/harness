@@ -15,15 +15,14 @@
             },
 
             "structure" : {
-                "weight" : 0.2,
+                "weight" : 0.3,
                 "evaluators" : [
                     {
                         "type" : "required_funcs",
                         "func_names" : []
                     },
                     {
-                        "type" : "required_loops",
-                        "loops" : []
+                        "type" : "required_loops"
                     }
                 ]
             },
@@ -32,19 +31,9 @@
                 "weight" : 0.4,
                 "evaluators" : [
                     {
-                        "type" : "execute_response_code",
-                        "target" : "prompt"
+                        "type" : "execute_response_code"
                     }
                 ]
-            },
-
-            "adherence" : {
-                "weight" : 0.1,
-                "evaluators" : [
-                    {
-                        "type" : "wrapper"
-                    }
-                ] 
             }
         }
     }

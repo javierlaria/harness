@@ -167,7 +167,7 @@ def pattern_recognition(response: str, pattern: str) -> bool:
     return bool(re.search(pattern, response))
 
 def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dict: 
-    if baseline == None:
+    if baseline is None:
         print("Evaluation: evaluate_response: No baseline")
         return {
                 "expectance" : None,
@@ -192,6 +192,7 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
 
         total_score = 0
         total_weight = 0
+
         print("")
         for name, criterion in score_criterions.items():
             print(f" - Testing {name}.")
@@ -199,11 +200,11 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
             weight = criterion.get("weight", 0.0)
 
             for evaluator in criterion.get("evaluators", []):
-                evaluation = run_evaluation(evaluator, response, expected_answer, wrapper)
+                evaluation = run_evaluation(evaluator, response, prompt, expected_answer, wrapper)
                 print(f"Test: {evaluation.get("type")} -> {evaluation.get("score")}")
                 evaluations.append(evaluation)
 
-            if len(evaluations) == 0:
+            if not evaluations:
                 print("No evaluators assigned.\n")
                 continue
 
@@ -218,12 +219,11 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
             
         if total_weight > 0:
             result["overall_score"] = total_score / total_weight
-        print(f"Overall score: {result["overall_score"]}")
-        result["status"] = "complete"
-
-    elif expected_answer is not None:
-        result["status"] = "partially completed"
-
+            result["status"] = "complete"
+            print(f"Overall score: {result["overall_score"]}")
+        else:
+            result["status"] = "No evaluators"
+            
     return result
 
 def run_evaluation(evaluator: dict, response: str, prompt: dict, expected_answer: str, wrapper: dict) -> dict:
