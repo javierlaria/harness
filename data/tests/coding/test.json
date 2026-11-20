@@ -4,10 +4,6 @@
     "description" : "Evaluate the model's ability to write basic python code that compiles.",
     "baseline" : {
         "expected_answers" : false,
-        "wrapper" : {
-            "in" : "<answer>",
-            "out" : "</answer>"
-        },
         "criterions" : {
             "validity" : {
                 "weight" : 0.3,
@@ -36,7 +32,8 @@
                 "weight" : 0.4,
                 "evaluators" : [
                     {
-                        "type" : "execute_response_code"
+                        "type" : "execute_response_code",
+                        "target" : "prompt"
                     }
                 ]
             },

@@ -124,7 +124,7 @@ def required_loops(response: str, loops: dict, wrapper: dict) -> tuple[bool, flo
     except SyntaxError:
         return False, 0.0
 
-def execute_response_code(response: str, wrapper: dict, target_name: str, args: tuple, expected_output) -> bool:
+def execute_response_code(response: str, wrapper: dict, target_name: str, args, expected_output) -> bool:
     code = extract_wrapped_content(response, wrapper)
     try:
         parsed_code = ast.parse(code)
@@ -226,13 +226,17 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
 
     return result
 
-def run_evaluation(evaluator: str, response: str, expected_answer: str, wrapper: dict) -> dict:
+def run_evaluation(evaluator: dict, response: str, prompt: dict, expected_answer: str, wrapper: dict) -> dict:
     evaluator_type = evaluator["type"]
 
     match evaluator_type:
         case "exact_match":
             target = (expected_answer if evaluator["target"] == "expected_answer" else evaluator["target"])
             result = exact_match(response, target, wrapper)
+
+        case "normalized_match":
+            target = (expected_answer if evaluator["target"] == "expected_answer" else evaluator["target"])
+            result = normalized_matching(response, target, wrapper)
 
         case "keywords":
             result = keywords(response, evaluator["keywords"])
@@ -263,9 +267,32 @@ def run_evaluation(evaluator: str, response: str, expected_answer: str, wrapper:
 
         case "required_loops":
             result = required_loops(response, evaluator["loops"], wrapper)
+
+        case "execute_response_code":
+            prompt_evaluation = prompt.get("evaluation", {})
+
+            target_func = prompt_evaluation.get("target_func")
+            test_cases = prompt_evaluation.get("tests_cases", [])
+
+            if not target_func or not test_cases:
+                result = False
+            else:
+                passed_tests = 0
+
+                for test_case in test_cases:
+                    res = execute_response_code(
+                        response= response,
+                        wrapper= wrapper,
+                        target_name= target_func,
+                        args= test_case["arguments"],
+                        expected_output= test_case["expected_output"]
+                    )
+                    if res:
+                        passed_tests += 1
+                result = (True, passed_tests / len(test_cases))
         
         case _:
-            raise ValueError("Evaluation: run_evaluation: Unknown evaluator type ", evaluator_type)
+            raise ValueError(f"Evaluation: run_evaluation: Unknown evaluator type {evaluator_type}")
 
     return {
         "type" : evaluator_type,
