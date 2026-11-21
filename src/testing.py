@@ -242,7 +242,13 @@ def save_result(result: dict) -> pathlib.Path:
 
     dir.mkdir(parents= True, exist_ok = True)
 
-    filepath = dir / f"{safe_model_id}_{technique_id}_{test_id}.json"
+    def get_filepath(dir, model_id: str, technique_id: str, test_id: str, number: int = 0):
+        filepath = dir / f"{model_id}_{technique_id}_{test_id}_{number}.json"
+        if os.path.exists(filepath):
+            return get_filepath(dir, model_id, technique_id, test_id, number = number + 1)
+        return filepath
+
+    filepath = get_filepath(dir, safe_model_id, technique_id, test_id)
 
     with filepath.open("w", encoding= "utf-8") as file:
         json.dump(result, file, indent= 4, ensure_ascii= False)

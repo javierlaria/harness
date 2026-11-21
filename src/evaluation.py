@@ -38,6 +38,18 @@ def extract_wrapped_content(response: str, wrapper: dict) -> str:
 
     return response.strip()
 
+def extract_markdown_formatting(response: str) -> str:
+    if not isinstance(response, str):
+        return ""
+
+    markdown_pattern = r"```(?:python|py)?\s*\n?(.*?)```"
+    matches = re.findall(markdown_pattern, response.strip(),flags= re.IGNORECASE | re.DOTALL)
+
+    if matches:
+        return "\n\n".join(matches).strip()
+
+    return response
+
 def valid_json(response: str, wrapper: dict) -> bool:
     extracted = extract_wrapped_content(response, wrapper)
     try:
@@ -84,16 +96,18 @@ def max_json_size(response: str, limit: int, wrapper: dict) -> bool:
         return False
     return len(extracted) <= limit
 
-def syntax_check(response: str, wrapper: dict) -> bool:
-    code = extract_wrapped_content(response, wrapper)
+def syntax_check(response: str) -> bool:
+    code = extract_markdown_formatting(response)
     try:
+        print("Extracted code:", repr(code))
+        print("Extracted type:", type(code))
         ast.parse(code)
         return True
-    except SyntaxError:
+    except (SyntaxError, TypeError):
         return False
 
-def required_funcs(response: str, func_names: list, wrapper: dict) -> tuple[bool, float]:
-    code = extract_wrapped_content(response, wrapper)
+def required_funcs(response: str, func_names: str) -> tuple[bool, float]:
+    code = extract_markdown_formatting(response)
     if not func_names:
         return True, 1.0
     try:
@@ -108,10 +122,10 @@ def required_funcs(response: str, func_names: list, wrapper: dict) -> tuple[bool
     except SyntaxError:
         return False, 0.0
 
-def required_loops(response: str, loops: dict, wrapper: dict) -> tuple[bool, float]:
-    code = extract_wrapped_content(response, wrapper)
+def required_loops(response: str, loops: dict) -> tuple[bool, float]:
+    code = extract_markdown_formatting(response)
     try:
-        if not loops:
+        if loops == {}:
             raise ValueError(f"Evaluation: No loops to compare on.")
         parsed_code = ast.parse(code)
         found = {
@@ -129,20 +143,27 @@ def required_loops(response: str, loops: dict, wrapper: dict) -> tuple[bool, flo
     except (SyntaxError, ValueError):
         return False, 0.0
 
-def execute_response_code(response: str, wrapper: dict, target_name: str, args, expected_output) -> bool:
-    code = extract_wrapped_content(response, wrapper)
+def execute_response_code(response: str, target_name: str, args, expected_output) -> bool:
+    code = extract_markdown_formatting(response)
     try:
         parsed_code = ast.parse(code)
         code_object = compile(parsed_code, file_name = "try_code", mode= "exec")
         namespace = {}
+
+        print("Target function:", target_name)
+        print("Arguments:", args)
+        print("Expected:", expected_output)
+        print("Extracted code:", code)
+        print("Available functions:", namespace.keys())
+
         exec(code_object, namespace)
 
         func_to_run = namespace.get(target_name)
-        if callable(func_to_run):
-            result = func_to_run(*args)
-            return result == expected_output
+        if not callable(func_to_run):
+            return False
+        result = func_to_run(*args)
+        return result == expected_output
 
-        return False
     except SyntaxError:
         return False
 
@@ -172,13 +193,13 @@ def pattern_recognition(response: str, pattern: str) -> bool:
     return bool(re.search(pattern, response))
 
 def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dict: 
-    if baseline is None:
-        print("Evaluation: evaluate_response: No baseline")
+    if not isinstance(response, str) or baseline is None:
+        print("Evaluation: evaluate_response: Skipped evaluation.")
         return {
                 "expectance" : None,
                 "evaluations" : {},
                 "overall_score" : None,
-                "status" : "No baseline to evaluate"
+                "status" : "Skipped"
             }
     expected_answer = prompt.get("expected", None)
     wrapper = baseline.get("wrapper", None)
@@ -216,11 +237,11 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
             result["evaluations"][name] = evaluations
 
             criterion_score = sum(evaluation.get("score", 0.0) for evaluation in evaluations) / len(evaluations)
-
-            total_score += criterion_score * weight
+            weighted_score = criterion_score * weight
+            total_score += weighted_score
             total_weight += weight
 
-            print(f"Score: {criterion_score} * {weight} = {total_score}\n")
+            print(f"Score: {criterion_score} * {weight} = {weighted_score}\n")
             
         if total_weight > 0:
             result["overall_score"] = total_score / total_weight
@@ -265,14 +286,14 @@ def run_evaluation(evaluator: dict, response: str, prompt: dict, expected_answer
             result = proper_values(response, evaluator["values"], wrapper)
 
         case "syntax_check":
-            result = syntax_check(response, wrapper)
+            result = syntax_check(response)
 
         case "required_funcs":
-            result = required_funcs(response, prompt.get("evaluation", {}).get("target_func", ""), wrapper)
+            result = required_funcs(response, prompt.get("evaluation", {}).get("target_func", ""))
 
         case "required_loops":
             loops = prompt.get("evaluation", {}).get("loops", None)
-            result = required_loops(response, loops, wrapper)
+            result = required_loops(response, loops)
 
         case "execute_response_code":
             prompt_evaluation = prompt.get("evaluation", {})
@@ -288,7 +309,6 @@ def run_evaluation(evaluator: dict, response: str, prompt: dict, expected_answer
                 for test_case in test_cases:
                     res = execute_response_code(
                         response= response,
-                        wrapper= wrapper,
                         target_name= target_func,
                         args= test_case["arguments"],
                         expected_output= test_case["expected_output"]
