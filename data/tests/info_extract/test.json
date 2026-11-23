@@ -14,12 +14,11 @@
                 "weight" : 0.5,
                 "evaluators" : [
                     {
-                        "type" : "proper_values",
-                        "values" : []
+                        "type" : "proper_values"
                     },
                     {
                         "type" : "exact_match",
-                        "expected" : "expected_answer"
+                        "target" : "expected_answer"
                     
                     }
                 ]
@@ -32,18 +31,16 @@
                         "type" : "valid_json"
                     },
                     {
-                        "type" : "max_json_size",
-                        "limit" : 300
+                        "type" : "max_json_size"
                     }
                 ]
             },
 
             "completeness" : {
-                "weight" : 0.4,
+                "weight" : 0.3,
                 "evaluators" : [
                     {
-                        "type" : "required_json_keys",
-                        "keys": []
+                        "type" : "required_json_keys"
                     }
                 ]
             }

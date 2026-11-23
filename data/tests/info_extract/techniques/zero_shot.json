@@ -1,214 +1,149 @@
-{
-    "technique_id" : "zero_shot",
-    "name" : "Zero-shot",
 
-    "context" : {
-        "instructions": "You are an assistant. You write simple and concise python code.",
-        "problem": "Respond with a short python function/s that solves the given request.",
-        "initial_messages" : []
+{
+    "technique_id": "zero_shot",
+    "name": "Zero-shot",
+
+    "context": {
+        "instructions": "You are an information extraction assistant. You extract relevant information from user prompts and return it in a structured JSON format.",
+        "problem": "Analyze the given prompt and extract the requested information.",
+
+        "initial_messages": []
     },
 
-    "prompts" : [
+    "prompts": [
         {
-            "id" : "001",
-            "input" : "Write a function called is_palindrome that recieves a string and returns a boolean, based of if it is a palindrome.",
-            "evaluation": {}
-        },
-        {
-            "id" : "002",
-            "input" : "Write a function called get_even_numbers that recieves a list of integers and returns a new list containing only the even numbers, in their original order.",
-            "evaluation": {
-                "target_func" : "get_even_numbers",
-                "loops" : {
-                    "for" : 1,
-                    "while" : 0
+            "id": "001",
+            "input": "Extract the relevant information from the following prompt: My name is John, I am 25 years old, and I live in Madrid. I work as a software developer. Return my name, age, city, and occupation.",
+            "expected": "{\"name\": \"John\", \"age\": 25, \"city\": \"Madrid\", \"occupation\": \"software developer\"}",
+            "evaluation" : {
+                "values" : {
+                    "name" : "John",
+                    "age" : 25,
+                    "city" : "Madrid",
+                    "occupation" : "software developer"
                 },
-                "test_cases" : [
-                    {
-                        "arguments" : [[1, 2, 3, 4, 5]],
-                        "expected_output" : [2, 4]
-                    },
-                    {
-                        "arguments" : [[8, 9, 12, 12, 14]],
-                        "expected_output" : [8, 12, 12, 14]
-                    },
-                    {
-                        "arguments" : [[]],
-                        "expected_output" : []
-                    }
-                ] 
+                "keys" : ["name", "age", "city", "occupation"],
+                "limit" : 300
             }
         },
         {
-            "id" : "003",
-            "input" : "Write a function called shortest_word that recieves a list of strings and returns a list containing the shortest one/s",
-            "evaluation": {
-                "target_func" : "shortest_word",
-                "loops" : {
-                    "for" : 1,
-                    "while" : 0
+            "id": "002",
+            "input": "Extract the relevant information from the following prompt: I want to book a table for 4 people at an Italian restaurant in Barcelona on December 15th at 20:00. Return the party size, restaurant type, city, date, and time.",
+            "expected": "{\"party_size\": 4, \"restaurant_type\": \"Italian\", \"city\": \"Barcelona\", \"date\": \"December 15th\", \"time\": \"20:00\"}",
+            "evaluation" : {
+                "values" : {
+                    "party_size" : 4,
+                    "restaurant_type": "Italian",
+                    "city": "Barcelona",
+                    "date": "December 15th", 
+                    "time": "20:00"
                 },
-                "test_cases" : [
-                    {
-                        "arguments" : [["one", "two", "three", "four"]],
-                        "expected_output" : ["one", "two"]
-                    },
-                    {
-                        "arguments" : [["strength", "dexterity", "intelligence"]],
-                        "expected_output" : ["strength"]
-                    },
-                    {
-                        "arguments" : [["dont", "open", "dead", "inside"]],
-                        "expected_output" : ["dont", "open", "dead"]
-                    } 
-                ]
+                "keys" : ["party_size", "restaurant_type", "city", "date", "time"],
+                "limit" : 300
             }
         },
         {
-            "id" : "004",
-            "input" : "Write a function called sum_unindexed_primes that recieves a list of lists, each containing integers. The function returns the sum of all prime elements and all the elements in prime subindexes, but not prime elements in prime subindexes, using zero-based indexing.",
-            "evaluation": {
-                "target_func" : "sum_unindexed_primes",
-                "loops" : {
-                    "for" : 3,
-                    "while" : 0
+            "id": "003",
+            "input": "Extract the relevant information from the following prompt: The meeting will take place on March 10th, 2027, at 14:30 in Room 205. The meeting topic is project planning. Return the date, time, location, and topic.",
+            "expected": "{\"date\": \"March 10th, 2027\", \"time\": \"14:30\", \"location\": \"Room 205\", \"topic\": \"project planning\"}",
+            "evaluation" : {
+                "values" : {
+                    "date": "March 10th, 2027", 
+                    "time": "14:30", 
+                    "location": "Room 205", 
+                    "topic": "project planning"
                 },
-                "test_cases" : [
-                    {
-                        "arguments" : [[[0, 2, 5, 9], [3, 10], [1, 18, 87], [13, 2, 4, 6]]],
-                        "expected_output" : 126
-                    },
-                    {
-                        "arguments" : [[[8, 9, 12, 12, 14]]],
-                        "expected_output" : 24
-                    },
-                    {
-                        "arguments" : [[[13], [2, 2, 5, 6], [3, 5]]],
-                        "expected_output" : 31
-                    }
-                ]
+                "keys" : ["date", "time", "location", "topic"],
+                "limit" : 300
             }
         },
         {
-            "id" : "005",
-            "input" : "Write a function called reverse_string that recieves a string and returns the reverse.",
-            "evaluation": {
-                "target_func" : "reverse_string",
-                "loops" : {
-                    "for" : 1,
-                    "while" : 0
+            "id": "004",
+            "input": "Extract the relevant information from the following prompt: The only types of clouds I know are cumulus and cirrus, Mr.Fabio still has to teach me the rest. Return the known cloud types and the teacher's name.",
+            "expected": "{\"cloud_types\": [\"Cumulus\", \"Cirrus\"], \"teacher_name\": \"Fabio\"}",
+            "evaluation" : {
+                "values" : {
+                    "cloud_types": ["Cumulus", "Cirrus"], 
+                    "teacher_name": "Fabio"
                 },
-                "test_cases" : [
-                    {
-                        "arguments" : ["reverse string"],
-                        "expected_output" : "gnirts esrever"
-                    },
-                    {
-                        "arguments" : ["kullback leibler divergence"],
-                        "expected_output" : "ecnegrevid relbiel kcablluk"
-                    },
-                    {
-                        "arguments" : ["tuptuo tcefrep"],
-                        "expected_output" : "perfect output"
-                    }
-                ]
+                "keys" : ["cloud_types", "teacher_name"],
+                "limit" : 100
             }
         },
         {
-            "id" : "006",
-            "input" : "Write a function called remove_multi_duplicates that recieves a list of integers and returns a new list containing without more than 2 duplicate elements, preserving the original order",
-            "evaluation": {
-                "target_func" : "remove_multi_duplicates",
-                "loops" : {
-                    "for" : 1,
-                    "while" : 0
+            "id": "005",
+            "input": "Extract the relevant information from the following prompt: I keep getting the same items: alchemy, scour and chance orbs, but I want divine and fracturing orbs instead. Return the possessed orbs and the wanted orbs.",
+            "expected": "{\"possessed_orbs\": [\"Alchemy\", \"Scour\", \"Chance\"], \"wanted_orbs\": [\"Divine\", \"Fracturing\"]}",
+            "evaluation" : {
+                "values" : {
+                    "possessed_orbs": ["Alchemy", "Scour", "Chance"], 
+                    "wanted_orbs": ["Divine", "Fracturing"]
                 },
-                "test_cases" : [
-                    {
-                        "arguments" : [[1, 2, 3, 4, 5, 2, 5, 1, 2, 5, 2]],
-                        "expected_output" : [1, 2, 3, 4, 5, 2, 5, 1]
-                    },
-                    {
-                        "arguments" : [[8, 9, 12, 12, 14, 15, 12, 15, 12, 14, 9]],
-                        "expected_output" : [8, 9, 12, 12, 14, 15, 15, 14, 9]
-                    },
-                    {
-                        "arguments" : [[5, 15, 5, 15, 2, 15, 2, 5, 15, 2, 6]],
-                        "expected_output" : [5, 15, 5, 15, 2, 2, 6]
-                    }
-                ]
+                "keys" : ["possessed_orbs", "wanted_orbs"],
+                "limit" : 200
             }
         },
         {
-            "id" : "007",
-            "input" : "Write a function called word_frequency that recieves a string and returns a dictionary with the frecuency of each word.",
-            "evaluation": {
-                "target_func" : "word_frequency",
-                "loops" : {
-                    "for" : 1,
-                    "while" : 0
+            "id": "006",
+            "input": "Extract the relevant information from the following prompt: Your curriculum shows you have C2, C1, B1 and B2 in German, French, Italian and Spanish respectively. With degrees in Paleonthology and Applied Statistics. Return the languages with their respective level, and the degrees.",
+            "expected": "{\"languages\": {\"german\" : \"C2\", \"french\": \"C1\", \"Italian\": \"B1\", \"Spanish\": \"B2\"}, \"degrees\": [\"Paleonthology\", \"Applied Statistics\"]}",
+            "evaluation" : {
+                "values" : {
+                    "languages": {
+                        "german" : "C2", 
+                        "french": "C1", 
+                        "Italian": "B1", 
+                        "Spanish": "B2"
+                    }, 
+                    "degrees": ["Paleonthology", "Applied Statistics"]
                 },
-                "test_cases" : [
-                    {
-                        "arguments" : ["strawberry consumes apples"],
-                        "expected_output" : {"strawberry" : 1, "consumes" : 1, "apples" : 1}
-                    },
-                    {
-                        "arguments" : ["blink arrow mirror arrow"],
-                        "expected_output" : {"blink" : 1, "arrow" : 2, "mirror" : 1}
-                    },
-                    {
-                        "arguments" : ["terrible terrifying terribly terrible"],
-                        "expected_output" : {"terrible" : 2, "terrifying" : 1, "terribly" : 1}
-                    }
-                ]
+                "keys" : ["languages", "degrees"],
+                "limit" : 300
             }
         },
         {
-            "id" : "008",
-            "input" : "Write a function called double_sorted_median that recieves a list with 2 lists and returns the median of the 2 merged, sorted arrays.",
-            "evaluation": {
-                "target_func" : "double_sorted_median",
-                "test_cases" : [
-                    {
-                        "arguments" : [[[1, 3, 5], [2, 4, 6, 9]]],
-                        "expected_output" : 4
-                    },
-                    {
-                        "arguments" : [[[8, 9, 12, 12, 14], [4, 7, 7, 10, 13]]],
-                        "expected_output" : 9.5
-                    },
-                    {
-                        "arguments" : [[[10], [1, 5]]],
-                        "expected_output" : 5
-                    }
-                ]
-            }
-        },
-        {
-            "id" : "009",
-            "input" : "Write a function called well_formed_n_parentheses that recieves an integer n and returns a new list containing all the possible combinations of n well formed parentheses in a string.",
-            "evaluation": {
-                "target_func" : "well_formed_n_parentheses",
-                "loops" : {
-                    "for" : 1,
-                    "while" : 0
+            "id": "007",
+            "input": "Extract the relevant information from the following prompt: Let's go over it again. You can shoot, swap, guard, charge or run. You can choose 3. Return the options and the number of choices.",
+            "expected": "{\"options\": [\"shoot\", \"swap\", \"guard\", \"charge\", \"run\"], \"number_of_choices\": 3}",
+            "evaluation" : {
+                "values" : {
+                    "options": ["shoot", "swap", "guard", "charge", "run"], 
+                    "number_of_choices": 3
                 },
-                "test_cases" : [
-                    {
-                        "arguments" : [1],
-                        "expected_output" : ["()"]
-                    },
-                    {
-                        "arguments" : [3],
-                        "expected_output" : ["((()))","(()())","(())()","()(())","()()()"]
-                    },
-                    {
-                        "arguments" : [2],
-                        "expected_output" : ["(())", "()()"]
-                    }
-                ]
+                "keys" : ["options", "number_of_choices"],
+                "limit" : 200
             }
+        },
+        {
+            "id": "008",
+            "input": "Extract the following information from this request: I am organizing a conference with 3 speakers: Alice, Bob, and Charlie. The topics they will cover are artificial intelligence, cybersecurity, and data science. Return the number of speakers, their names, and the topics.",
+            "expected": "{\"speaker_count\": 3, \"speakers\": [\"Alice\", \"Bob\", \"Charlie\"], \"topics\": [\"artificial intelligence\", \"cybersecurity\", \"data science\"]}",
+            "evaluation" : {
+                "values" : {
+                    "number_of_speakers": 3, 
+                    "speakers": ["Alice", "Bob", "Charlie"], 
+                    "topics": ["artificial intelligence", "cybersecurity", "data science"]
+                },
+                "keys" : ["number_of_speakers", "speakers", "topics"],
+                "limit" : 300
+            }
+        },
+        {
+           "id": "009",
+           "input": "Extract the details from this shopping list: I need to buy 2 kg of apples, 1 litre of milk, 3 loaves of bread, and 12 eggs. Return the items list containing the product, quantity, and unit.",
+           "expected": "{\"items\": [{\"product\": \"apples\", \"quantity\": 2, \"unit\": \"kg\"}, {\"product\": \"milk\", \"quantity\": 1, \"unit\": \"litre\"}, {\"product\": \"bread\", \"quantity\": 3, \"unit\": \"loaves\"}, {\"product\": \"eggs\", \"quantity\": 12, \"unit\": \"eggs\"}]}",
+           "evaluation": {
+               "values": {
+                   "items": [
+                       {"product": "apples", "quantity": 2, "unit": "kg"},
+                       {"product": "milk", "quantity": 1, "unit": "litre"},
+                       {"product": "bread", "quantity": 3, "unit": "loaves"},
+                       {"product": "eggs", "quantity": 12, "unit": "egg"}
+                   ]
+               },
+               "keys": ["items"],
+               "limit": 300
+           }
         }
     ]
 }

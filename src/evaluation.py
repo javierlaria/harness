@@ -38,9 +38,9 @@ def valid_json(response: str, wrapper: dict) -> bool:
 
 def required_json_keys(response: str, keys: list, wrapper: dict) -> tuple[bool, float]:
     extracted = extract_wrapped_content(response, wrapper)
-    if not keys:
-        raise ValueError
     try:
+        if not keys:
+            raise ValueError
         loaded_json = json.loads(extracted)
         if isinstance(loaded_json, dict):
             score = 0.0
@@ -49,14 +49,16 @@ def required_json_keys(response: str, keys: list, wrapper: dict) -> tuple[bool, 
                 if key in loaded_json:
                     score += weight
             return True, score
+        else:
+            raise TypeError
     except (json.JSONDecodeError, TypeError, ValueError):
         return False, 0.0
 
 def proper_values(response: str, values: dict, wrapper: dict) -> tuple[bool, float]:
     extracted = extract_wrapped_content(response, wrapper)
-    if not values:
-        raise ValueError
     try:
+        if not values:
+            raise ValueError
         loaded_json = json.loads(extracted)
         if isinstance(loaded_json, dict):
             score = 0.0
@@ -65,6 +67,8 @@ def proper_values(response: str, values: dict, wrapper: dict) -> tuple[bool, flo
                 if loaded_json.get(key) == value:
                     score += weight
             return True, score
+        else:
+            raise TypeError
     except (json.JSONDecodeError, TypeError, ValueError):
         return False, 0.0
 
@@ -233,7 +237,7 @@ def run_evaluation(evaluator: dict, response: str, prompt: dict, expected_answer
 
     match evaluator_type:
         case "exact_match":
-            target = (expected_answer if evaluator["target"] == "expected_answer" else evaluator["target"])
+            target = (expected_answer if evaluator.get("target") == "expected_answer" else evaluator.get("target", ""))
             result = exact_match(response, target, wrapper)
 
         case "normalized_match":
@@ -252,15 +256,20 @@ def run_evaluation(evaluator: dict, response: str, prompt: dict, expected_answer
         case "pattern":
             result = pattern_recognition(response, evaluator["pattern"])
 
-        case "json_valid":
+        case "valid_json":
             result = valid_json(response, wrapper)
 
         case "required_json_keys":
-            result = required_json_keys(response, evaluator["keys"], wrapper)
+            keys = prompt.get("evaluation", {}).get("keys", [])
+            result = required_json_keys(response, keys, wrapper)
 
         case "proper_values":
-            result = proper_values(response, evaluator["values"], wrapper)
+            values = prompt.get("evaluation", {}).get("values", [])
+            result = proper_values(response, values, wrapper)
 
+        case "max_json_size":
+            limit = prompt.get("evaluation", {}).get("limit", 1000)
+            result = max_json_size(response, limit, wrapper)
         case "syntax_check":
             result = syntax_check(response)
 
@@ -298,6 +307,6 @@ def run_evaluation(evaluator: dict, response: str, prompt: dict, expected_answer
 
     return {
         "type" : evaluator_type,
-        "result_valid" : result if isinstance(result, bool) else result[0],
-        "score" : result[1] if isinstance(result, tuple) else 1.0 if result else 0.0
+        "result_valid" : True if isinstance(result, bool) else result[0],
+        "score" : (1.0 if result else 0.0) if isinstance(result, bool) else result[1]
     }

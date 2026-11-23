@@ -1,62 +1,149 @@
+
 {
-    "technique_id" : "instruction_based",
-    "name" : "Instruction_based",
+    "technique_id": "zero_shot",
+    "name": "Zero-shot",
 
-    "context" : {
-        "instructions": "You are an assistant.\n\nRules: Only answer one of the specified categories.\nIdentify which is the action performed.\nClassify based on the intent of the actor.",
-        "problem": "Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes.",
-        "initial_messages" : []
+    "context": {
+        "instructions": "You are an information extraction assistant. \nRules: Analyse the given information.\nConsider what the requested keys could represent.\n",
+        "problem": "Analyze the given prompt and extract the requested information.",
+
+        "initial_messages": []
     },
 
-    "execution" : {
-        "strategy" : "independent"
-    },
-
-    "prompts" : [
+    "prompts": [
         {
-            "id" : "001",
-            "input" : "An elephant trampling a rhino.",
-            "expected" : "Strength"
+            "id": "001",
+            "input": "Extract the relevant information from the following prompt: My name is John, I am 25 years old, and I live in Madrid. I work as a software developer. Return my name, age, city, and occupation.",
+            "expected": "{\"name\": \"John\", \"age\": 25, \"city\": \"Madrid\", \"occupation\": \"software developer\"}",
+            "evaluation" : {
+                "values" : {
+                    "name" : "John",
+                    "age" : 25,
+                    "city" : "Madrid",
+                    "occupation" : "software developer"
+                },
+                "keys" : ["name", "age", "city", "occupation"],
+                "limit" : 300
+            }
         },
         {
-            "id" : "002",
-            "input" : "An assassin slicing a throat.",
-            "expected" : "Dexterity"
+            "id": "002",
+            "input": "Extract the relevant information from the following prompt: I want to book a table for 4 people at an Italian restaurant in Barcelona on December 15th at 20:00. Return the party size, restaurant type, city, date, and time.",
+            "expected": "{\"party_size\": 4, \"restaurant_type\": \"Italian\", \"city\": \"Barcelona\", \"date\": \"December 15th\", \"time\": \"20:00\"}",
+            "evaluation" : {
+                "values" : {
+                    "party_size" : 4,
+                    "restaurant_type": "Italian",
+                    "city": "Barcelona",
+                    "date": "December 15th", 
+                    "time": "20:00"
+                },
+                "keys" : ["party_size", "restaurant_type", "city", "date", "time"],
+                "limit" : 300
+            }
         },
         {
-            "id" : "003",
-            "input" : "A governor convincing a mob.",
-            "expected" : "Intelligence"
+            "id": "003",
+            "input": "Extract the relevant information from the following prompt: The meeting will take place on March 10th, 2027, at 14:30 in Room 205. The meeting topic is project planning. Return the date, time, location, and topic.",
+            "expected": "{\"date\": \"March 10th, 2027\", \"time\": \"14:30\", \"location\": \"Room 205\", \"topic\": \"project planning\"}",
+            "evaluation" : {
+                "values" : {
+                    "date": "March 10th, 2027", 
+                    "time": "14:30", 
+                    "location": "Room 205", 
+                    "topic": "project planning"
+                },
+                "keys" : ["date", "time", "location", "topic"],
+                "limit" : 300
+            }
         },
         {
-            "id" : "004",
-            "input" : "A King invading a rival kingdom.",
-            "expected" : "Strength"
+            "id": "004",
+            "input": "Extract the relevant information from the following prompt: The only types of clouds I know are cumulus and cirrus, Mr.Fabio still has to teach me the rest. Return the known cloud types and the teacher's name.",
+            "expected": "{\"cloud_types\": [\"Cumulus\", \"Cirrus\"], \"teacher_name\": \"Fabio\"}",
+            "evaluation" : {
+                "values" : {
+                    "cloud_types": ["Cumulus", "Cirrus"], 
+                    "teacher_name": "Fabio"
+                },
+                "keys" : ["cloud_types", "teacher_name"],
+                "limit" : 100
+            }
         },
         {
-            "id" : "005",
-            "input" : "A scientist throwing a knife to test his strength.",
-            "expected" : "Intelligence"
+            "id": "005",
+            "input": "Extract the relevant information from the following prompt: I keep getting the same items: alchemy, scour and chance orbs, but I want divine and fracturing orbs instead. Return the possessed orbs and the wanted orbs.",
+            "expected": "{\"possessed_orbs\": [\"Alchemy\", \"Scour\", \"Chance\"], \"wanted_orbs\": [\"Divine\", \"Fracturing\"]}",
+            "evaluation" : {
+                "values" : {
+                    "possessed_orbs": ["Alchemy", "Scour", "Chance"], 
+                    "wanted_orbs": ["Divine", "Fracturing"]
+                },
+                "keys" : ["possessed_orbs", "wanted_orbs"],
+                "limit" : 200
+            }
         },
         {
-            "id" : "006",
-            "input" : "A giant monster running to avoid a venomous plant.",
-            "expected" : "Intelligence"
+            "id": "006",
+            "input": "Extract the relevant information from the following prompt: Your curriculum shows you have C2, C1, B1 and B2 in German, French, Italian and Spanish respectively. With degrees in Paleonthology and Applied Statistics. Return the languages with their respective level, and the degrees.",
+            "expected": "{\"languages\": {\"german\" : \"C2\", \"french\": \"C1\", \"Italian\": \"B1\", \"Spanish\": \"B2\"}, \"degrees\": [\"Paleonthology\", \"Applied Statistics\"]}",
+            "evaluation" : {
+                "values" : {
+                    "languages": {
+                        "german" : "C2", 
+                        "french": "C1", 
+                        "Italian": "B1", 
+                        "Spanish": "B2"
+                    }, 
+                    "degrees": ["Paleonthology", "Applied Statistics"]
+                },
+                "keys" : ["languages", "degrees"],
+                "limit" : 300
+            }
         },
         {
-            "id" : "007",
-            "input" : "A child scoring ten goals in a football match.",
-            "expected" : "Dexterity"
+            "id": "007",
+            "input": "Extract the relevant information from the following prompt: Let's go over it again. You can shoot, swap, guard, charge or run. You can choose 3. Return the options and the number of choices.",
+            "expected": "{\"options\": [\"shoot\", \"swap\", \"guard\", \"charge\", \"run\"], \"number_of_choices\": 3}",
+            "evaluation" : {
+                "values" : {
+                    "options": ["shoot", "swap", "guard", "charge", "run"], 
+                    "number_of_choices": 3
+                },
+                "keys" : ["options", "number_of_choices"],
+                "limit" : 200
+            }
         },
         {
-            "id" : "008",
-            "input" : "A lycanthrope locking himself in a cell during a full moon.",
-            "expected" : "Intelligence"
+            "id": "008",
+            "input": "Extract the following information from this request: I am organizing a conference with 3 speakers: Alice, Bob, and Charlie. The topics they will cover are artificial intelligence, cybersecurity, and data science. Return the number of speakers, their names, and the topics.",
+            "expected": "{\"speaker_count\": 3, \"speakers\": [\"Alice\", \"Bob\", \"Charlie\"], \"topics\": [\"artificial intelligence\", \"cybersecurity\", \"data science\"]}",
+            "evaluation" : {
+                "values" : {
+                    "number_of_speakers": 3, 
+                    "speakers": ["Alice", "Bob", "Charlie"], 
+                    "topics": ["artificial intelligence", "cybersecurity", "data science"]
+                },
+                "keys" : ["number_of_speakers", "speakers", "topics"],
+                "limit" : 300
+            }
         },
         {
-            "id" : "009",
-            "input" : "A construction worker carrying a 40 kilogram sand bag.",
-            "expected" : "Strength"
+           "id": "009",
+           "input": "Extract the details from this shopping list: I need to buy 2 kg of apples, 1 litre of milk, 3 loaves of bread, and 12 eggs. Return the items list containing the product, quantity, and unit.",
+           "expected": "{\"items\": [{\"product\": \"apples\", \"quantity\": 2, \"unit\": \"kg\"}, {\"product\": \"milk\", \"quantity\": 1, \"unit\": \"litre\"}, {\"product\": \"bread\", \"quantity\": 3, \"unit\": \"loaves\"}, {\"product\": \"eggs\", \"quantity\": 12, \"unit\": \"eggs\"}]}",
+           "evaluation": {
+               "values": {
+                   "items": [
+                       {"product": "apples", "quantity": 2, "unit": "kg"},
+                       {"product": "milk", "quantity": 1, "unit": "litre"},
+                       {"product": "bread", "quantity": 3, "unit": "loaves"},
+                       {"product": "eggs", "quantity": 12, "unit": "egg"}
+                   ]
+               },
+               "keys": ["items"],
+               "limit": 300
+           }
         }
     ]
 }
