@@ -9,9 +9,6 @@
         "sequential prompt" : "Review your answer:\n- Is it correct?\n- Does it satisfy the format?"
     },
 
-    "execution" : {
-        "strategy" : "independent"
-    },
 
     "prompts" : [
         {

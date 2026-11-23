@@ -8,10 +8,6 @@
         "initial_messages" : []
     },
 
-    "execution" : {
-        "strategy" : "independent"
-    },
-
     "prompts" : [
         {
             "id" : "001",
