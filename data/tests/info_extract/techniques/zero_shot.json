@@ -6,7 +6,6 @@
     "context": {
         "instructions": "You are an information extraction assistant. You extract relevant information from user prompts and return it in a structured JSON format.",
         "problem": "Analyze the given prompt and extract the requested information.",
-
         "initial_messages": []
     },
 

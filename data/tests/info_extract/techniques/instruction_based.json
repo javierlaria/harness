@@ -1,12 +1,11 @@
 
 {
-    "technique_id": "zero_shot",
-    "name": "Zero-shot",
+    "technique_id": "instruction_based",
+    "name": "Instruction-based",
 
     "context": {
-        "instructions": "You are an information extraction assistant. \nRules: Analyse the given information.\nConsider what the requested keys could represent.\n",
+        "instructions": "You are an information extraction assistant. \nRules: Analyse the given information.\nConsider what the requested keys could represent.\nYour output must be in json format, organised as required.",
         "problem": "Analyze the given prompt and extract the requested information.",
-
         "initial_messages": []
     },
 

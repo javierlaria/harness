@@ -1,7 +1,7 @@
 
 {
-    "technique_id": "zero_shot",
-    "name": "Zero-shot",
+    "technique_id": "self_refinement",
+    "name": "Self-refinement",
 
     "context": {
         "instructions": "You are an information extraction assistant. You extract relevant information from user prompts and return it in a structured JSON format.",
