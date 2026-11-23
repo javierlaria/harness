@@ -35,6 +35,10 @@
             "input" : "Write a function called get_even_numbers that recieves a list of integers and returns a new list containing only the even numbers, in their original order.",
             "evaluation": {
                 "target_func" : "get_even_numbers",
+                "loops" : {
+                    "for" : 1,
+                    "while" : 0
+                },
                 "test_cases" : [
                     {
                         "arguments" : [[1, 2, 3, 4, 5]],
@@ -42,7 +46,7 @@
                     },
                     {
                         "arguments" : [[8, 9, 12, 12, 14]],
-                        "expected_output" : [8, 4]
+                        "expected_output" : [8, 12, 12, 14]
                     },
                     {
                         "arguments" : [[]],
@@ -56,6 +60,10 @@
             "input" : "Write a function called shortest_word that recieves a list of strings and returns a list containing the shortest one/s",
             "evaluation": {
                 "target_func" : "shortest_word",
+                "loops" : {
+                    "for" : 1,
+                    "while" : 0
+                },
                 "test_cases" : [
                     {
                         "arguments" : [["one", "two", "three", "four"]],
@@ -67,16 +75,20 @@
                     },
                     {
                         "arguments" : [["dont", "open", "dead", "inside"]],
-                        "expected_output" : []
-                    }
+                        "expected_output" : ["dont", "open", "dead"]
+                    } 
                 ]
             }
         },
         {
             "id" : "004",
-            "input" : "write a function called sum_unindexed_primes that recieves a list of lists, each containing integers. The function returns the sum of every prime number and every number in a prime index, but not the prime numbers in prime indexes",
+            "input" : "Write a function called sum_unindexed_primes that recieves a list of lists, each containing integers. The function returns the sum of all prime elements and all the elements in prime subindexes, but not prime elements in prime subindexes, using zero-based indexing.",
             "evaluation": {
                 "target_func" : "sum_unindexed_primes",
+                "loops" : {
+                    "for" : 3,
+                    "while" : 0
+                },
                 "test_cases" : [
                     {
                         "arguments" : [[[0, 2, 5, 9], [3, 10], [1, 18, 87], [13, 2, 4, 6]]],
@@ -97,7 +109,11 @@
             "id" : "005",
             "input" : "Write a function called reverse_string that recieves a string and returns the reverse.",
             "evaluation": {
-                "target_func" : "",
+                "target_func" : "reverse_string",
+                "loops" : {
+                    "for" : 1,
+                    "while" : 0
+                },
                 "test_cases" : [
                     {
                         "arguments" : ["reverse string"],
@@ -119,6 +135,10 @@
             "input" : "Write a function called remove_multi_duplicates that recieves a list of integers and returns a new list containing without more than 2 duplicate elements, preserving the original order",
             "evaluation": {
                 "target_func" : "remove_multi_duplicates",
+                "loops" : {
+                    "for" : 1,
+                    "while" : 0
+                },
                 "test_cases" : [
                     {
                         "arguments" : [[1, 2, 3, 4, 5, 2, 5, 1, 2, 5, 2]],
@@ -139,7 +159,11 @@
             "id" : "007",
             "input" : "Write a function called word_frequency that recieves a string and returns a dictionary with the frecuency of each word.",
             "evaluation": {
-                "target_func" : "character_amounts",
+                "target_func" : "word_frequency",
+                "loops" : {
+                    "for" : 1,
+                    "while" : 0
+                },
                 "test_cases" : [
                     {
                         "arguments" : ["strawberry consumes apples"],
@@ -182,6 +206,10 @@
             "input" : "Write a function called well_formed_n_parentheses that recieves an integer n and returns a new list containing all the possible combinations of n well formed parentheses in a string.",
             "evaluation": {
                 "target_func" : "well_formed_n_parentheses",
+                "loops" : {
+                    "for" : 1,
+                    "while" : 0
+                },
                 "test_cases" : [
                     {
                         "arguments" : [1],
@@ -193,7 +221,7 @@
                     },
                     {
                         "arguments" : [2],
-                        "expected_output" : ["()()", "(())"]
+                        "expected_output" : ["(())", "()()"]
                     }
                 ]
             }

@@ -1,30 +1,8 @@
 
 import re
 import json
-import ast # apparently used to parse python code into readable abstract trees.
+import ast 
 
-#### Things to put here
-
-###  metrics 
-# time, tokens input/output
-# precision, recall and f1 if applicable
-# semantic similarity?
-
-### scoring
-# answer/reference (expectance) comparison
-# invalid or missing handle
-# deterministic evaluation rules
-
-### analysis
-# aggregate scores
-# technique comparison
-# confusion matrix?
-# experiment summaries
-
-#### New evaluators to think about:
-# classification -> match (bool), f1 (bool), precision (aggregate), recall (aggregate), keywords (bool), wrapper (bool), max_word_count (bool)
-# info_extract -> json_valid (bool), exact_match (bool), required_keys (aggregate), field_match (aggregate), max_size (bool)
-# coding -> code_output_match (bool), syntax_check (bool), required_funcs (aggregate), pattern (bool)
 
 def normalize(text: str) -> str:
     return " ".join(text.lower().strip().split())
@@ -106,15 +84,17 @@ def syntax_check(response: str) -> bool:
     except (SyntaxError, TypeError):
         return False
 
-def required_funcs(response: str, func_names: str) -> tuple[bool, float]:
+def required_funcs(response: str, func_names: list | str) -> tuple[bool, float]:
     code = extract_markdown_formatting(response)
     if not func_names:
         return True, 1.0
+    if isinstance(func_names, str):
+        func_names = [func_names]
     try:
         parsed_code = ast.parse(code)
         score = 0.0
         weight = 1.0 / len(func_names) if func_names else 1.0
-        funcs = {node.name for node in ast.walk(parsed_code) if isinstance(node, ast.FunctionDef)}
+        funcs = {node.name for node in ast.walk(parsed_code) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
         for func in funcs:
             if func in func_names:
                 score += weight
@@ -125,7 +105,7 @@ def required_funcs(response: str, func_names: str) -> tuple[bool, float]:
 def required_loops(response: str, loops: dict) -> tuple[bool, float]:
     code = extract_markdown_formatting(response)
     try:
-        if loops == {}:
+        if loops == {} or loops is None:
             raise ValueError(f"Evaluation: No loops to compare on.")
         parsed_code = ast.parse(code)
         found = {
@@ -147,24 +127,19 @@ def execute_response_code(response: str, target_name: str, args, expected_output
     code = extract_markdown_formatting(response)
     try:
         parsed_code = ast.parse(code)
-        code_object = compile(parsed_code, file_name = "try_code", mode= "exec")
+        code_object = compile(parsed_code, filename = "try_code", mode= "exec")
         namespace = {}
-
-        print("Target function:", target_name)
-        print("Arguments:", args)
-        print("Expected:", expected_output)
-        print("Extracted code:", code)
-        print("Available functions:", namespace.keys())
-
         exec(code_object, namespace)
 
         func_to_run = namespace.get(target_name)
         if not callable(func_to_run):
+            print("Evaluation: Expected output: No callable")
             return False
         result = func_to_run(*args)
         return result == expected_output
 
     except SyntaxError:
+        print("Evaluation: Expected output: Wrong parse")
         return False
 
 def wrap(text: str, wrapper: dict):
@@ -228,10 +203,11 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
             for evaluator in criterion.get("evaluators", []):
                 evaluation = run_evaluation(evaluator, response, prompt, expected_answer, wrapper)
                 print(f"Test: {evaluation.get("type")} -> {evaluation.get("score")}")
-                evaluations.append(evaluation)
+                if evaluation["result_valid"]:
+                    evaluations.append(evaluation)
 
             if not evaluations:
-                print("No evaluators assigned.\n")
+                print("Evaluation: No evaluators.\n")
                 continue
 
             result["evaluations"][name] = evaluations
@@ -299,7 +275,7 @@ def run_evaluation(evaluator: dict, response: str, prompt: dict, expected_answer
             prompt_evaluation = prompt.get("evaluation", {})
 
             target_func = prompt_evaluation.get("target_func")
-            test_cases = prompt_evaluation.get("tests_cases", [])
+            test_cases = prompt_evaluation.get("test_cases", [])
 
             if not target_func or not test_cases:
                 result = False

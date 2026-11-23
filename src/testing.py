@@ -175,7 +175,7 @@ def build_result(test: dict, technique: dict, model: str, repetitions: int, runs
 
     responses = [response for prompt in prompts for response in prompt.get("responses")]
 
-    evaluations = [prompt.get("evaluation") for prompt in prompts if prompt.get("evalution", None) is not None]
+    evaluations = [prompt.get("evaluation") for prompt in prompts if prompt.get("evaluation", None) is not None]
 
     scores = [evaluation.get("overall_score") for evaluation in evaluations if evaluation.get("overall_score", None) is not None]
 

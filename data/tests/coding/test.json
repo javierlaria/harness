@@ -6,7 +6,7 @@
         "expected_answers" : false,
         "criterions" : {
             "validity" : {
-                "weight" : 0.3,
+                "weight" : 0.2,
                 "evaluators" : [
                     {
                         "type" : "syntax_check"
@@ -15,7 +15,7 @@
             },
 
             "structure" : {
-                "weight" : 0.3,
+                "weight" : 0.1,
                 "evaluators" : [
                     {
                         "type" : "required_funcs"
@@ -27,7 +27,7 @@
             },
 
             "functionality" : {
-                "weight" : 0.4,
+                "weight" : 0.7,
                 "evaluators" : [
                     {
                         "type" : "execute_response_code"

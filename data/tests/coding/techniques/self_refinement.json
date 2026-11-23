@@ -6,180 +6,226 @@
         "instructions": "You are an assistant. You write simple and concise python code.",
         "problem": "Respond with a short python function/s that solves the given request.",
         "initial_messages" : [],
-        "sequential_prompts" : []
+        "sequential_prompts" : ["Review your answer, and return only the function again."]
     },
 
     "prompts" : [
         {
             "id" : "001",
             "input" : "Write a function called is_palindrome that recieves a string and returns a boolean, based of if it is a palindrome.",
-            "target_func" : "is_palidrome",
-            "test_cases" : [
-                {
-                    "arguments" : ["Scrumptuous"],
-                    "expected_output" : false
-                },
-                {
-                    "arguments" : ["xanax"],
-                    "expected_output" : true
-                },
-                {
-                    "arguments" : ["156787651"],
-                    "expected_output" : true
-                }
-            ]
+            "evaluation": {
+                "target_func" : "is_palindrome",
+                "test_cases" : [
+                    {
+                        "arguments" : ["Scrumptuous"],
+                        "expected_output" : false
+                    },
+                    {
+                        "arguments" : ["xanax"],
+                        "expected_output" : true
+                    },
+                    {
+                        "arguments" : ["156787651"],
+                        "expected_output" : true
+                    }
+                ]
+            }
         },
         {
             "id" : "002",
             "input" : "Write a function called get_even_numbers that recieves a list of integers and returns a new list containing only the even numbers, in their original order.",
-            "target_func" : "get_even_numbers",
-            "test_cases" : [
-                {
-                    "arguments" : [[1, 2, 3, 4, 5]],
-                    "expected_output" : [2, 4]
+            "evaluation": {
+                "target_func" : "get_even_numbers",
+                "loops" : {
+                    "for" : 1,
+                    "while" : 0
                 },
-                {
-                    "arguments" : [[8, 9, 12, 12, 14]],
-                    "expected_output" : [8, 4]
-                },
-                {
-                    "arguments" : [[]],
-                    "expected_output" : []
-                }
-            ]
+                "test_cases" : [
+                    {
+                        "arguments" : [[1, 2, 3, 4, 5]],
+                        "expected_output" : [2, 4]
+                    },
+                    {
+                        "arguments" : [[8, 9, 12, 12, 14]],
+                        "expected_output" : [8, 12, 12, 14]
+                    },
+                    {
+                        "arguments" : [[]],
+                        "expected_output" : []
+                    }
+                ] 
+            }
         },
         {
             "id" : "003",
             "input" : "Write a function called shortest_word that recieves a list of strings and returns a list containing the shortest one/s",
-            "target_func" : "shortest_word",
-            "test_cases" : [
-                {
-                    "arguments" : [["one", "two", "three", "four"]],
-                    "expected_output" : ["one", "two"]
+            "evaluation": {
+                "target_func" : "shortest_word",
+                "loops" : {
+                    "for" : 1,
+                    "while" : 0
                 },
-                {
-                    "arguments" : [["strength", "dexterity", "intelligence"]],
-                    "expected_output" : ["strength"]
-                },
-                {
-                    "arguments" : [["dont", "open", "dead", "inside"]],
-                    "expected_output" : []
-                }
-            ]
+                "test_cases" : [
+                    {
+                        "arguments" : [["one", "two", "three", "four"]],
+                        "expected_output" : ["one", "two"]
+                    },
+                    {
+                        "arguments" : [["strength", "dexterity", "intelligence"]],
+                        "expected_output" : ["strength"]
+                    },
+                    {
+                        "arguments" : [["dont", "open", "dead", "inside"]],
+                        "expected_output" : ["dont", "open", "dead"]
+                    } 
+                ]
+            }
         },
         {
             "id" : "004",
-            "input" : "write a function called sum_unindexed_primes that recieves a list of lists, each containing integers. The function returns the sum of every prime number and every number in a prime index, but not the prime numbers in prime indexes",
-            "target_func" : "sum_unindexed_primes",
-            "test_cases" : [
-                {
-                    "arguments" : [[[0, 2, 5, 9], [3, 10], [1, 18, 87], [13, 2, 4, 6]]],
-                    "expected_output" : 126
+            "input" : "Write a function called sum_unindexed_primes that recieves a list of lists, each containing integers. The function returns the sum of all prime elements and all the elements in prime subindexes, but not prime elements in prime subindexes, using zero-based indexing.",
+            "evaluation": {
+                "target_func" : "sum_unindexed_primes",
+                "loops" : {
+                    "for" : 3,
+                    "while" : 0
                 },
-                {
-                    "arguments" : [[[8, 9, 12, 12, 14]]],
-                    "expected_output" : 24
-                },
-                {
-                    "arguments" : [[[13], [2, 2, 5, 6], [3, 5]]],
-                    "expected_output" : 31
-                }
-            ]
+                "test_cases" : [
+                    {
+                        "arguments" : [[[0, 2, 5, 9], [3, 10], [1, 18, 87], [13, 2, 4, 6]]],
+                        "expected_output" : 126
+                    },
+                    {
+                        "arguments" : [[[8, 9, 12, 12, 14]]],
+                        "expected_output" : 24
+                    },
+                    {
+                        "arguments" : [[[13], [2, 2, 5, 6], [3, 5]]],
+                        "expected_output" : 31
+                    }
+                ]
+            }
         },
         {
             "id" : "005",
             "input" : "Write a function called reverse_string that recieves a string and returns the reverse.",
-            "target_func" : "",
-            "test_cases" : [
-                {
-                    "arguments" : ["reverse string"],
-                    "expected_output" : "gnirts esrever"
+            "evaluation": {
+                "target_func" : "reverse_string",
+                "loops" : {
+                    "for" : 1,
+                    "while" : 0
                 },
-                {
-                    "arguments" : ["kullback leibler divergence"],
-                    "expected_output" : "ecnegrevid relbiel kcablluk"
-                },
-                {
-                    "arguments" : ["tuptuo tcefrep"],
-                    "expected_output" : "perfect output"
-                }
-            ]
+                "test_cases" : [
+                    {
+                        "arguments" : ["reverse string"],
+                        "expected_output" : "gnirts esrever"
+                    },
+                    {
+                        "arguments" : ["kullback leibler divergence"],
+                        "expected_output" : "ecnegrevid relbiel kcablluk"
+                    },
+                    {
+                        "arguments" : ["tuptuo tcefrep"],
+                        "expected_output" : "perfect output"
+                    }
+                ]
+            }
         },
         {
             "id" : "006",
             "input" : "Write a function called remove_multi_duplicates that recieves a list of integers and returns a new list containing without more than 2 duplicate elements, preserving the original order",
-            "target_func" : "remove_multi_duplicates",
-            "test_cases" : [
-                {
-                    "arguments" : [[1, 2, 3, 4, 5, 2, 5, 1, 2, 5, 2]],
-                    "expected_output" : [1, 2, 3, 4, 5, 2, 5, 1]
+            "evaluation": {
+                "target_func" : "remove_multi_duplicates",
+                "loops" : {
+                    "for" : 1,
+                    "while" : 0
                 },
-                {
-                    "arguments" : [[8, 9, 12, 12, 14, 15, 12, 15, 12, 14, 9]],
-                    "expected_output" : [8, 9, 12, 12, 14, 15, 15, 14, 9]
-                },
-                {
-                    "arguments" : [[5, 15, 5, 15, 2, 15, 2, 5, 15, 2, 6]],
-                    "expected_output" : [5, 15, 5, 15, 2, 2, 6]
-                }
-            ]
+                "test_cases" : [
+                    {
+                        "arguments" : [[1, 2, 3, 4, 5, 2, 5, 1, 2, 5, 2]],
+                        "expected_output" : [1, 2, 3, 4, 5, 2, 5, 1]
+                    },
+                    {
+                        "arguments" : [[8, 9, 12, 12, 14, 15, 12, 15, 12, 14, 9]],
+                        "expected_output" : [8, 9, 12, 12, 14, 15, 15, 14, 9]
+                    },
+                    {
+                        "arguments" : [[5, 15, 5, 15, 2, 15, 2, 5, 15, 2, 6]],
+                        "expected_output" : [5, 15, 5, 15, 2, 2, 6]
+                    }
+                ]
+            }
         },
         {
             "id" : "007",
             "input" : "Write a function called word_frequency that recieves a string and returns a dictionary with the frecuency of each word.",
-            "target_func" : "character_amounts",
-            "test_cases" : [
-                {
-                    "arguments" : ["strawberry consumes apples"],
-                    "expected_output" : {"strawberry" : 1, "consumes" : 1, "apples" : 1}
+            "evaluation": {
+                "target_func" : "word_frequency",
+                "loops" : {
+                    "for" : 1,
+                    "while" : 0
                 },
-                {
-                    "arguments" : ["blink arrow mirror arrow"],
-                    "expected_output" : {"blink" : 1, "arrow" : 2, "mirror" : 1}
-                },
-                {
-                    "arguments" : ["terrible terrifying terribly terrible"],
-                    "expected_output" : {"terrible" : 2, "terrifying" : 1, "terribly" : 1}
-                }
-            ]
+                "test_cases" : [
+                    {
+                        "arguments" : ["strawberry consumes apples"],
+                        "expected_output" : {"strawberry" : 1, "consumes" : 1, "apples" : 1}
+                    },
+                    {
+                        "arguments" : ["blink arrow mirror arrow"],
+                        "expected_output" : {"blink" : 1, "arrow" : 2, "mirror" : 1}
+                    },
+                    {
+                        "arguments" : ["terrible terrifying terribly terrible"],
+                        "expected_output" : {"terrible" : 2, "terrifying" : 1, "terribly" : 1}
+                    }
+                ]
+            }
         },
         {
             "id" : "008",
             "input" : "Write a function called double_sorted_median that recieves a list with 2 lists and returns the median of the 2 merged, sorted arrays.",
-            "target_func" : "double_sorted_median",
-            "test_cases" : [
-                {
-                    "arguments" : [[[1, 3, 5], [2, 4, 6, 9]]],
-                    "expected_output" : 4
-                },
-                {
-                    "arguments" : [[[8, 9, 12, 12, 14], [4, 7, 7, 10, 13]]],
-                    "expected_output" : 9.5
-                },
-                {
-                    "arguments" : [[[10], [1, 5]]],
-                    "expected_output" : 5
-                }
-            ]
+            "evaluation": {
+                "target_func" : "double_sorted_median",
+                "test_cases" : [
+                    {
+                        "arguments" : [[[1, 3, 5], [2, 4, 6, 9]]],
+                        "expected_output" : 4
+                    },
+                    {
+                        "arguments" : [[[8, 9, 12, 12, 14], [4, 7, 7, 10, 13]]],
+                        "expected_output" : 9.5
+                    },
+                    {
+                        "arguments" : [[[10], [1, 5]]],
+                        "expected_output" : 5
+                    }
+                ]
+            }
         },
         {
             "id" : "009",
             "input" : "Write a function called well_formed_n_parentheses that recieves an integer n and returns a new list containing all the possible combinations of n well formed parentheses in a string.",
-            "target_func" : "well_formed_n_parentheses",
-            "test_cases" : [
-                {
-                    "arguments" : [1],
-                    "expected_output" : ["()"]
+            "evaluation": {
+                "target_func" : "well_formed_n_parentheses",
+                "loops" : {
+                    "for" : 1,
+                    "while" : 0
                 },
-                {
-                    "arguments" : [3],
-                    "expected_output" : ["((()))","(()())","(())()","()(())","()()()"]
-                },
-                {
-                    "arguments" : [2],
-                    "expected_output" : ["()()", "(())"]
-                }
-            ]
+                "test_cases" : [
+                    {
+                        "arguments" : [1],
+                        "expected_output" : ["()"]
+                    },
+                    {
+                        "arguments" : [3],
+                        "expected_output" : ["((()))","(()())","(())()","()(())","()()()"]
+                    },
+                    {
+                        "arguments" : [2],
+                        "expected_output" : ["(())", "()()"]
+                    }
+                ]
+            }
         }
     ]
 }
