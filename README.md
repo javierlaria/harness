@@ -1,8 +1,10 @@
 ## About
 
-Code and implementation of an agent/model harness api.
+Code and implementation of a barebones agent/model harness api.
 
 Runs regular chatting with models, but the main point is testing models with requests using different prompt techniques.
+
+It should allow you to write your own tests if you follow the same structure as the other tests.
 
 ### Usage
 
