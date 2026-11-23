@@ -31,10 +31,6 @@
             {
                 "role": "assistant",
                 "content": "{\"languages\": {\"german\": \"C2\", \"french\": \"C1\", \"Italian\": \"B1\", \"Spanish\": \"B2\"}, \"degrees\": [\"Paleonthology\", \"Applied Statistics\"]}"
-            },
-            {
-                "role": "user",
-                "content": "Analyze the given prompt and extract the requested information. Return only valid JSON, using the exact keys and appropriate data structures requested. Preserve the information provided, and do not infer missing values."
             }
         ]
     },

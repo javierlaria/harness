@@ -8,13 +8,6 @@
         "initial_messages" : [
             {
                 "role": "user",
-                "content": "A dog solving a puzzle."
-            },
-            {
-                "role": "assistant",
-                "content": "Intelligence"
-            },{
-                "role": "user",
                 "content": "A metal worker bending raw iron with his bare hands."
             },
             {
@@ -37,7 +30,7 @@
             }
         ]
     },
-    
+
     "prompts" : [
         {
             "id" : "001",
