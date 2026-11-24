@@ -19,14 +19,14 @@
             },
             {
                 "role": "assistant",
-                "content": "def vowel(text):\n    for vowel in text:\n        if vowel in 'aeiou':\n            return vowel"
+                "content": "def first_vowel(text):\n    for vowel in text:\n        if vowel.lower() in 'aeiou':\n            return vowel \n    return None"
             },{
                 "role": "user",
                 "content": "Write a function called long_list that recieves a list and an integer and returns True if the list is longer than the integer."
             },
             {
                 "role": "assistant",
-                "content": "def long_list(list, n):\n    return len(list) < n"
+                "content": "def long_list(list, n):\n    return len(list) > n"
             }
         ]
     },

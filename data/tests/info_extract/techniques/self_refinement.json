@@ -7,7 +7,7 @@
         "instructions": "You are an information extraction assistant. You extract relevant information from user prompts and return it in a structured JSON format.",
         "problem": "Analyze the given prompt and extract the requested information.",
         "initial_messages": [],
-        "sequential_prompts": ["Review you result, think about the possible keys that you might be missing, and return the result again."]
+        "sequential_prompts": ["Review you result. Are all the requested keys included? Are data types appropriate? Are the values accurate? Are the relationships between values preserved? Is the output a valid json? Correct any errors and return only the final json object."]
     },
 
     "prompts": [

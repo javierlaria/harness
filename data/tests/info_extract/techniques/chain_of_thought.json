@@ -4,7 +4,7 @@
     "name": "Chain-of-thought",
 
     "context": {
-        "instructions": "You are an information extraction assistant. First: Analyse the prompt. Second: recognise the required information. Third: isolate the information. Fourth: Construct the json well-organised and properly nested. Final: Review the result and return only it.",
+        "instructions": "You are an information extraction assistant. First: Identify the requested information. Second: Locate it in the prompt. Third: Associate each value with a key and data type. Fourth: Organise the extracted information in a valid json structure. Final: Verify your result and return only it.",
         "problem": "Analyze the given prompt and extract the requested information.",
         "initial_messages": []
     },

@@ -78,6 +78,15 @@ def max_json_size(response: str, limit: int, wrapper: dict) -> bool:
         return False
     return len(extracted) <= limit
 
+def exact_json(response: str, expected: dict, wrapper: dict | None) -> bool:
+    extracted = extract_wrapped_content(response, wrapper)
+    try:
+        response_json = json.loads(extracted)
+        expected_json = json.loads(expected)
+        return response_json == expected_json
+    except (json.JSONDecodeError, TypeError):
+        return False
+
 def syntax_check(response: str) -> bool:
     code = extract_markdown_formatting(response)
     try:
@@ -133,7 +142,7 @@ def execute_response_code(response: str, target_name: str, args, expected_output
         parsed_code = ast.parse(code)
         code_object = compile(parsed_code, filename = "try_code", mode= "exec")
         namespace = {}
-        exec(code_object, namespace)
+        exec(code_object, namespace) ## DANGER do not give it bad prompts, I havent isolated the system.
 
         func_to_run = namespace.get(target_name)
         if not callable(func_to_run):
@@ -142,8 +151,8 @@ def execute_response_code(response: str, target_name: str, args, expected_output
         result = func_to_run(*args)
         return result == expected_output
 
-    except SyntaxError:
-        print("Evaluation: Expected output: Wrong parse")
+    except Exception:
+        print("Evaluation: Expected output: Exception")
         return False
 
 def wrap(text: str, wrapper: dict):
@@ -181,12 +190,12 @@ def evaluate_response(prompt: dict, response: str, baseline: dict | None) -> dic
                 "status" : "Skipped"
             }
     expected_answer = prompt.get("expected", None)
-    wrapper = baseline.get("wrapper", None)
+    wrapper = baseline.get("wrapper", None) if baseline else None
     score_criterions = baseline.get("criterions", None)
     result = {
         "expectance" : None,
         "evaluations" : {},
-        "overall_score" : None,
+        "overall_score" : None, 
         "status" : "Pending"
     }
 
@@ -258,6 +267,9 @@ def run_evaluation(evaluator: dict, response: str, prompt: dict, expected_answer
 
         case "valid_json":
             result = valid_json(response, wrapper)
+
+        case "exact_json":
+            result = exact_json(response, expected_answer, wrapper)
 
         case "required_json_keys":
             keys = prompt.get("evaluation", {}).get("keys", [])

@@ -26,11 +26,11 @@
             },
             {
                 "role": "user",
-                "content": "Extract the relevant information from the following prompt: Your curriculum shows you have C2, C1, B1 and B2 in German, French, Italian and Spanish respectively. With degrees in Paleonthology and Applied Statistics. Return the languages with their respective level, and the degrees."
+                "content": "Extract the relevant information from the following prompt: Your curriculum shows you have C2, C1, B1 and B2 in German, French, Italian and Spanish respectively. With degrees in Paleontology and Applied Statistics. Return the languages with their respective level, and the degrees."
             },
             {
                 "role": "assistant",
-                "content": "{\"languages\": {\"german\": \"C2\", \"french\": \"C1\", \"Italian\": \"B1\", \"Spanish\": \"B2\"}, \"degrees\": [\"Paleonthology\", \"Applied Statistics\"]}"
+                "content": "{\"languages\": {\"german\": \"C2\", \"french\": \"C1\", \"italian\": \"B1\", \"spanish\": \"B2\"}, \"degrees\": [\"Paleontology\", \"Applied Statistics\"]}"
             }
         ]
     },

@@ -4,7 +4,7 @@
     "name": "Instruction-based",
 
     "context": {
-        "instructions": "You are an information extraction assistant. \nRules: Analyse the given information.\nConsider what the requested keys could represent.\nYour output must be in json format, organised as required.",
+        "instructions": "You are an information extraction assistant. \nRules:\nExtract only information from the prompt.\nIdentify all the requested fields with their corresponding values\nUse appropriate data types like strings, numbers, arrays, objects and booleans. Use null when appropriate.\nYour output must be in valid json format.",
         "problem": "Analyze the given prompt and extract the requested information.",
         "initial_messages": []
     },
@@ -115,7 +115,7 @@
         },
         {
             "id": "008",
-            "input": "Extract the following information from this request: I am organizing a conference with 3 speakers: Alice, Bob, and Charlie. The topics they will cover are artificial intelligence, cybersecurity, and data science. Return the number of speakers, their names, and the topics.",
+            "input": "Extract the relevant information from the following prompt: I am organizing a conference with 3 speakers: Alice, Bob and Charlie. The topics they will cover are artificial intelligence, cybersecurity, and data science. Return the number of speakers, their names, and the topics.",
             "expected": "{\"speaker_count\": 3, \"speakers\": [\"Alice\", \"Bob\", \"Charlie\"], \"topics\": [\"artificial intelligence\", \"cybersecurity\", \"data science\"]}",
             "evaluation" : {
                 "values" : {
@@ -129,15 +129,16 @@
         },
         {
            "id": "009",
-           "input": "Extract the details from this shopping list: I need to buy 2 kg of apples, 1 litre of milk, 3 loaves of bread, and 12 eggs. Return the items list containing the product, quantity, and unit.",
-           "expected": "{\"items\": [{\"product\": \"apples\", \"quantity\": 2, \"unit\": \"kg\"}, {\"product\": \"milk\", \"quantity\": 1, \"unit\": \"litre\"}, {\"product\": \"bread\", \"quantity\": 3, \"unit\": \"loaves\"}, {\"product\": \"eggs\", \"quantity\": 12, \"unit\": \"eggs\"}]}",
+           "input": "Extract the relevant information from the following prompt: I need to buy 2 kg of apples, 1 litre of milk, 3 loaves of bread, and 12 eggs. I also might buy some cheese. Return the items list containing the product, quantity, and unit.",
+           "expected": "{\"items\": [{\"product\": \"apples\", \"quantity\": 2, \"unit\": \"kg\"}, {\"product\": \"milk\", \"quantity\": 1, \"unit\": \"litre\"}, {\"product\": \"bread\", \"quantity\": 3, \"unit\": \"loaves\"}, {\"product\": \"eggs\", \"quantity\": 12, \"unit\": \"eggs\"}, {\"product\": \"cheese\", \"quantity\": null, \"unit\": \"kg\"}]}",
            "evaluation": {
                "values": {
                    "items": [
                        {"product": "apples", "quantity": 2, "unit": "kg"},
                        {"product": "milk", "quantity": 1, "unit": "litre"},
                        {"product": "bread", "quantity": 3, "unit": "loaves"},
-                       {"product": "eggs", "quantity": 12, "unit": "egg"}
+                       {"product": "eggs", "quantity": 12, "unit": "egg"},
+                       {"product": "cheese", "quantity": null, "unit": "kg"}
                    ]
                },
                "keys": ["items"],

@@ -3,7 +3,7 @@
     "name" : "Chain-of-thought",
 
     "context" : {
-        "instructions": "You are an assistant.\n\nBefore writing your answer:\nFirst: Identify the inputs and expected outputs\nSecond: understand the conditions and requirements of the problem. \nThird: Consider any possible edge cases and errors.\nFourth: Choose the appropiate algorithm for the solution. \nFinally: Implement the solution as a short python function",
+        "instructions": "You are an assistant.\n\nBefore writing your answer:\nFirst: Identify the inputs and expected outputs\nSecond: understand the conditions and requirements of the problem. \nThird: Consider any possible edge cases and errors.\nFourth: Choose the appropriate algorithm for the solution. \nFinally: Implement the solution as a short python function",
         "problem": "Respond with a short python function/s that solves the given request.",
         "initial_messages" : []
     },

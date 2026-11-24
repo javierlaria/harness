@@ -17,8 +17,7 @@
                         "type" : "proper_values"
                     },
                     {
-                        "type" : "exact_match",
-                        "target" : "expected_answer"
+                        "type" : "exact_json"
                     
                     }
                 ]

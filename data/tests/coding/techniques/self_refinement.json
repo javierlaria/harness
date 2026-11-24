@@ -6,7 +6,7 @@
         "instructions": "You are an assistant. You write simple and concise python code.",
         "problem": "Respond with a short python function/s that solves the given request.",
         "initial_messages" : [],
-        "sequential_prompts" : ["Review your answer, and return only the function again."]
+        "sequential_prompts" : ["Review your function:\n-Check the function name, parameters, return types, logic.\n-Consider the relevant edge cases and errors.\nReturn only the final function."]
     },
 
     "prompts" : [

@@ -51,30 +51,33 @@ def handle_request(user_input: str, context: ctx.Context, client: OpenAI | None,
             temperature = 0.0,
             top_p = 1.0,
             stream= True)
+        try:
+            for event in response:
+                match event.type:
 
-        for event in response:
-            match event.type:
+                    case "response.created":
+                        first_response_time = time.perf_counter()
 
-                case "response.created":
-                    first_response_time = time.perf_counter()
+                    case "response.output_text.delta":
+                        if first_token_time is None:
+                            first_token_time = time.perf_counter()
 
-                case "response.output_text.delta":
-                    if first_token_time is None:
-                        first_token_time = time.perf_counter()
+                        complete_answer += event.delta
+                        if print_answer:
+                            print(event.delta, end="", flush= True)
 
-                    complete_answer += event.delta
-                    if print_answer:
-                        print(event.delta, end="", flush= True)
+                    case "response.completed":
+                        end_message = event.response
 
-                case "response.completed":
-                    end_message = event.response
+                    case "response.failed":
+                        raise RuntimeError(f"Client:  {event.error}")
 
-                case "response.failed":
-                    raise RuntimeError("Client:  ", {event.response.error})
-
-                case "error":
-                    raise RuntimeError("Client:  Stream error: ", {event.message})
+                    case "error":
+                        raise RuntimeError(f"Client:  Stream error: {event.message}")
+        except RuntimeError:
+            complete_answer += "Runtime error."
             
+
     end_time = time.perf_counter()
 
     context.add_message("assistant", complete_answer)

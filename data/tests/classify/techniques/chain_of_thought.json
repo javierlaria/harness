@@ -3,7 +3,7 @@
     "name" : "Chain-of-thought",
 
     "context" : {
-        "instructions": "You are an assistant.\n\nFirst: Identify the main action or purpose described.\nSecond: Consider why and action is performed. \nThird: Recognize the objective of the action. \nFinally: Answer with the most appropiate attribute.",
+        "instructions": "You are an assistant.\n\nFirst: Identify the main action or purpose described.\nSecond: Consider why the action is performed. \nThird: Recognize the objective of the action. \nFinally: Answer only with the most appropiate attribute.",
         "problem": "\nClassify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes.",
         "initial_messages" : []
     },

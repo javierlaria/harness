@@ -6,7 +6,7 @@
         "instructions": "You are an assistant. Solve the task at hand.",
         "problem": "Classify the description as 'Strength', 'Dexterity' or 'Intelligence' attributes.",
         "initial_messages" : [],
-        "sequential prompt" : "Review your answer:\n- Is it correct?\n- Does it satisfy the format?"
+        "sequential prompt" : ["Review your answer:\n- Is it correct?\n- Does it satisfy the format?\n -Is the classification consistent with the attribute distinctions?\nCorrect your answer if necessary."]
     },
 
 

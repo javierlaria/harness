@@ -62,7 +62,7 @@ class Context():
             data = json.load(file)
 
         return cls(
-            instructions = data("instructions", ""),
+            instructions = data.get("instructions", ""),
             messages = data.get("messages", [])
         )
 

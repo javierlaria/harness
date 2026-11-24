@@ -38,7 +38,7 @@ def select_item(items: list, label: str, set_selection: int = None) -> dict:
             if 1 <= int(selection) <= len(items):
                 print(items[int(selection) - 1].get("name", item.get("test_id")))
                 return items[int(selection) - 1]
-        except ValueError:
+        except (IndexError, ValueError):
             pass
         print(f"Select a correct {label}.")
 
