@@ -6,6 +6,8 @@ Runs regular chatting with models, but the main point is testing models with req
 
 It should allow you to write your own tests if you follow the same structure as the other tests.
 
+tests : [Classify](data/tests/classify/test.json) [Coding](data/tests/coding/test.json) [Extract information](data/tests/info_extract/test.json)
+
 ### Usage
 
 Make a conda environment, use the environment.yml to get the modules.
